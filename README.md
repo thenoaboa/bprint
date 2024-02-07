@@ -1,0 +1,2 @@
+# bprint
+blueprint for short

@@ -1,0 +1,68 @@
+.projectsContainer {
+    padding: 20px;
+    text-align: center;
+    border-radius: 15px;
+    width: 600px; /* Fixed width */
+    margin: 0 auto; /* Center the container */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .searchBar {
+    margin-bottom: 20px;
+    padding: 10px;
+    width: calc(100% - 20px); /* Adjust based on padding and container width */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .projectsList {
+    width: 100%; /* Adjust this value as needed */
+    margin: 20px auto; /* This centers the list if the parent is flex or block */
+    overflow-y: auto;
+    max-height: 400px; /* Adjust based on your preference */
+  }
+  
+  .projectItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .projectName {
+    flex-grow: 1; /* This makes the project name take up the available space, pushing the button to the right */
+    text-align: left; /* Ensures text is aligned to the left */
+  }
+  
+  .downloadButton {
+    cursor: pointer;
+  }
+  
+  .noProjects {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .noProjects p {
+    margin-bottom: 20px;
+  }
+  .downloadButton {
+    cursor: pointer;
+    padding: 5px 10px;
+    width: auto;
+    margin-left: 10px;
+    border: 1px solid #007bff; /* Blue border */
+    border-radius: 4px; /* Rounded corners */
+    background-color: #007bff; /* Blue background */
+    color: white; /* White text */
+    font-size: 14px; /* Adjust text size */
+    transition: background-color 0.2s; /* Smooth transition for hover effect */
+  }
+
+  .downloadButton:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+  }

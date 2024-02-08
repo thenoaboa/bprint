@@ -1,0 +1,65 @@
+body, .homeContainer {
+    min-height: 100vh; /* This makes sure that the body or container takes up at least the height of the viewport */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .homeContainer {
+    flex-direction: column;
+  }
+  .hamburgerButton {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    font-size: 24px;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border: none; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+  }
+  
+  .navigationPanel {
+    position: fixed; /* Changed from absolute to fixed to make it consistent with the hamburger button */
+    top: 60px;
+    left: 20px;
+    background: white;
+    border-radius: 8px; /* Adds rounded corners */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Adds a subtle shadow for depth */
+    padding: 15px;
+    width: 200px; /* Sets a specific width */
+    z-index: 1000; /* Ensures it's above other content */
+  }
+  
+  .navigationPanel a {
+    display: block; /* Makes each link fill the container */
+    color: #007bff; /* Link color */
+    padding: 10px 15px; /* Adds padding for touch friendliness */
+    margin: 5px 0; /* Adds space between links */
+    border-radius: 4px; /* Rounded corners for the links */
+    text-decoration: none; /* Removes underline */
+    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+  }
+  
+  .navigationPanel a:hover {
+    background-color: #f0f0f0; /* Light background on hover */
+  }
+  
+  .centerButtons {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .centerButtons button {
+    margin: 10px;
+  }
+  

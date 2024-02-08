@@ -1,70 +1,34 @@
-# Getting Started with Create React App
+# Blueprint Interactive Viewer
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Overview
+Blueprint Interactive Viewer is a dynamic tool designed to revolutionize the way blueprints and detailed schematics are interacted with and understood. Developed by Merced and Noah, this application allows users to upload images of blueprints or items, providing a user-friendly interface to place interactive buttons on various parts of the uploaded image. Clicking these buttons reveals detailed information about the specific components, ranging from major parts used in large machinery to minor elements like small screws.
 
-## Available Scripts
+Beyond merely offering insights into projects and their components, Blueprint Interactive Viewer facilitates a deeper understanding of assembly processes, component functions, and overall project layout. It serves as an invaluable resource for engineers, architects, hobbyists, and anyone in need of detailed project schematics.
 
-In the project directory, you can run:
+## Features
+- **Image Upload:** Users can upload images of blueprints or schematics for interactive viewing.
+- **Interactive Buttons:** Place custom buttons on specific parts of the blueprint to denote different components.
+- **Detailed Descriptions:** Clicking a button provides detailed information about that component, including its use, specifications, and assembly instructions.
+- **Blueprint Download:** Offers the ability to download blueprints for offline viewing, making it perfect for on-site visits and fieldwork.
+- **User-Friendly Interface:** Designed with simplicity in mind, ensuring ease of use for all skill levels.
+
+## Getting Started
+
+### Prerequisites
+A modern web browser or a compatible device for running the application.
+
+### Installation
+This section will be updated with installation instructions once the application is ready for deployment.
 
 ### `npm start`
-
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
 The page will reload when you make changes.\
 You may also see any lint errors in the console.
 
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Usage
+1. **Upload a Blueprint:** Start by uploading an image of your blueprint to the application.
+2. **Add Interactive Buttons:** Place buttons on significant components or sections of the blueprint.
+3. **Input Descriptions:** For each button, add a detailed description of the component it represents.
+4. **Explore:** Click on the buttons to view component details or download the blueprint for external use.

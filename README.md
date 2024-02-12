@@ -32,3 +32,48 @@ You may also see any lint errors in the console.
 2. **Add Interactive Buttons:** Place buttons on significant components or sections of the blueprint.
 3. **Input Descriptions:** For each button, add a detailed description of the component it represents.
 4. **Explore:** Click on the buttons to view component details or download the blueprint for external use.
+
+## Current File Structure
+Bprint
+├── blueprint\
+│   ├── node_modules\
+│   │   └── Alot of folders...
+│   ├── public\
+│   │   ├── Edit.png
+│   │   ├── favicon.ico
+│   │   ├── IB_Icon.png
+│   │   ├── index.html
+│   │   ├── interactive_blueprint_logo.png
+│   │   ├── manifest.json
+│   │   └── robot.txt
+│   ├── src\
+│   │   ├── components\
+│   │   │   ├── CreateProject\
+│   │   │   │   ├── CreateProject.css
+│   │   │   │   └── CreateProject.js
+│   │   │   ├── HomePage\
+│   │   │   │   ├── HomePage.css
+│   │   │   │   └── HomePage.js
+│   │   │   ├── Login\
+│   │   │   │   ├── IB_Icon.png
+│   │   │   │   ├── Login.css
+│   │   │   │   └── Login.js
+│   │   │   ├── ProjectsPage\
+│   │   │   │   ├── ProjectsPage.css
+│   │   │   │   └── ProjectsPage.js
+│   │   │   ├── SignUp\
+│   │   │   │   ├── IB_Icon.png
+│   │   │   │   ├── SignUp.css
+│   │   │   │   └── SignUp.js
+│   │   ├── App.css
+│   │   ├── App.js
+│   │   ├── App.test.js
+│   │   ├── index.css
+│   │   ├── index.js
+│   │   ├── logo.svg
+│   │   ├── reportWebVitals.js
+│   │   └── setupTest.js
+│   ├── .gitignore
+│   ├── package-lock.json
+│   └── package.json
+└── README.md

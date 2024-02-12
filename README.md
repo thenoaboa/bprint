@@ -78,6 +78,14 @@ Bprint
 │   ├── package-lock.json
 │   └── package.json
 ├── server\
+│   ├── middleware\
+│   │   └── authenticate.js
+│   ├── models\
+│   │   └── User.js
+│   ├── node_modules\
+│   │   └── Alot of folders...
+│   ├── routes\
+│   │   └── auth.js
 │   ├── .env
 │   ├── .gitignore
 │   ├── index.js

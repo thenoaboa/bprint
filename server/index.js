@@ -1,38 +1,35 @@
 require('dotenv').config(); // Load environment variables from .env file
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const express = require('express');
+const authRoutes = require('./routes/auth');
+const authenticate = require('./middleware/authenticate');
+const { MongoClient } = require('mongodb');
 const uri = process.env.DB_URI; // Ensure this is correctly loaded from your .env file
 
-console.log("Attempting to connect to MongoDB with URI:", uri);
+const app = express();
+app.use(express.json());
+app.use('/api/auth', authRoutes);
 
-const client = new MongoClient(uri, {
-  serverApi: ServerApiVersion.v1,
-  strict: true,
-  deprecationErrors: true,
-});
+const client = new MongoClient(uri);
 
-async function run() {
+// Initialize MongoDB connection
+async function initializeDbConnection() {
   try {
-    console.log("Initializing connection...");
-    await client.connect();
-    console.log("Connected successfully to MongoDB");
-
-    // For debugging: Log the databases available (requires listDatabases permission)
-    const databasesList = await client.db().admin().listDatabases();
-    console.log("Databases:");
-    databasesList.databases.forEach(db => console.log(` - ${db.name}`));
+      await client.connect();
+      console.log("Connected successfully to MongoDB");
+      // Make the database connection available globally
+      app.locals.db = client.db();
   } catch (err) {
-    console.error("Failed to connect to MongoDB", err);
-    // Log detailed error information if available
-    if (err instanceof Error) {
-      console.log("Error name:", err.name);
-      console.log("Error message:", err.message);
-      console.log("Error stack:", err.stack);
-    }
-  } finally {
-    console.log("Closing connection...");
-    await client.close();
-    console.log("Connection closed.");
+      console.error("Failed to connect to MongoDB", err);
+      process.exit(1); // Exit the process if unable to connect
   }
 }
 
-run().catch(console.dir);
+// Example of a protected route
+app.get('/api/protected', authenticate, (req, res) => {
+res.send('Access granted to protected content');
+});
+
+// Start the server after establishing database connection
+initializeDbConnection().then(() => {
+  app.listen(3000, () => console.log('Server running'));
+});

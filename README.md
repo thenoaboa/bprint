@@ -34,6 +34,7 @@ You may also see any lint errors in the console.
 4. **Explore:** Click on the buttons to view component details or download the blueprint for external use.
 
 ## Current File Structure
+
 Bprint
 ├── blueprint\
 │   ├── node_modules\
@@ -74,6 +75,13 @@ Bprint
 │   │   ├── reportWebVitals.js
 │   │   └── setupTest.js
 │   ├── .gitignore
+│   ├── package-lock.json
+│   └── package.json
+├── server\
+│   ├── .env
+│   ├── .gitignore
+│   ├── app.js
+│   ├── index.js
 │   ├── package-lock.json
 │   └── package.json
 └── README.md

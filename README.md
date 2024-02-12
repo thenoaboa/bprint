@@ -80,7 +80,6 @@ Bprint
 ├── server\
 │   ├── .env
 │   ├── .gitignore
-│   ├── app.js
 │   ├── index.js
 │   ├── package-lock.json
 │   └── package.json

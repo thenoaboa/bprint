@@ -19,7 +19,7 @@ const SignUp = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const registerUrl = 'http://localhost:3000/api/auth/register'; // Adjust this URL to your backend endpoint
+    const registerUrl = 'http://localhost:5000/api/auth/register';
 
     try {
       const response = await fetch(registerUrl, {

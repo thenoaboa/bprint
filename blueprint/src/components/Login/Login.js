@@ -8,6 +8,7 @@ function Login() {
     const navigate = useNavigate(); // Use useNavigate hook for navigation
 
     const handleSubmit = async (event) => {
+        console.log('Login Button Clicked');
         event.preventDefault();
         const loginUrl = 'http://localhost:3000/api/auth/login';
 

@@ -20,8 +20,7 @@ const SignUp = () => {
   const handleSubmit = async (event) => {
     console.log('Registration Button Clicked');
     event.preventDefault();
-    const registerUrl = 'http://localhost:5000/api/auth/register';
-
+    const registerUrl = 'https://vigilant-space-chainsaw-ppwpq44r5pj365xw-5000.app.github.dev/api/auth/register';
     try {
       const response = await fetch(registerUrl, {
         method: 'POST',

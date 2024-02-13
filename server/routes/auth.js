@@ -28,6 +28,7 @@ router.post('/register', async (req, res) => {
     await user.save();
     res.status(201).send('User created');
   } catch (error) {
+    console.error("Error registering new user:", error);
     res.status(500).send('Error registering new user');
   }
 });
@@ -52,8 +53,10 @@ router.post('/login', async (req, res) => {
   
       res.status(200).json({ token });
     } catch (error) {
+      console.error("Error logging in user:", error);
       res.status(500).send('Error logging in user');
     }
   });
 
+  
 module.exports = router;

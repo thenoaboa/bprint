@@ -31,6 +31,11 @@ app.get('/api/protected', authenticate, (req, res) => {
     res.send('Access granted to protected content');
 });
 
+app.get('/', (req, res) => { //NEW CODE
+    res.send('Welcome to the API');
+  });
+  
+
 // Only one app.listen() call is necessary
 initializeDbConnection().then(() => {
     const PORT = process.env.PORT || 5000; // Use 5000 if process.env.PORT is not defined

@@ -33,3 +33,10 @@ res.send('Access granted to protected content');
 initializeDbConnection().then(() => {
   app.listen(3000, () => console.log('Server running'));
 });
+
+// At the bottom of your index.js file
+initializeDbConnection().then(() => {
+  const PORT = process.env.PORT || 5000; // Use 5000 if process.env.PORT is not defined
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+});
+ß

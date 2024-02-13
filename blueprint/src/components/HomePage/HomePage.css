@@ -9,18 +9,20 @@ body, .homeContainer {
     flex-direction: column;
   }
   .hamburgerButton {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    font-size: 24px;
-    cursor: pointer;
-    width: 40px;
-    height: 40px;
-    border: none; 
     display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 0;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 30px;
+    height: 25px;
+    background-color: #007bff; /* This sets the button background to blue */
+    border: none;
+    cursor: pointer;
+    padding: 5px; /* Add padding to make the button larger and more touch-friendly */
+    z-index: 10;
+    position: fixed; /* Fixed positioning to place it relative to the viewport */
+    top: 10px; /* Distance from the top of the viewport */
+    left: 10px; /* Distance from the left of the viewport */
+    border-radius: 5px; /* Optional: Adds rounded corners to the button */  
   }
   
   .navigationPanel {

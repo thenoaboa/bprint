@@ -1,12 +1,47 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import './SignUp.css'; // Make sure the CSS file is updated if necessary
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import './SignUp.css';
 
 const SignUp = () => {
-  const handleSubmit = (event) => {
+  const [formData, setFormData] = useState({
+    fullName: '',
+    username: '',
+    email: '',
+    phone: '',
+    password: '',
+  });
+
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log("Form submitted");
-    // Here, you'll handle the form submission, e.g., sending data to a backend.
+    const registerUrl = 'http://localhost:3000/api/auth/register'; // Adjust this URL to your backend endpoint
+
+    try {
+      const response = await fetch(registerUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log('Registration successful', data);
+        navigate('/login'); // Redirect user to login page after successful registration
+      } else {
+        throw new Error(data.message || 'An error occurred during registration.');
+      }
+    } catch (error) {
+      console.error('Registration failed:', error.message);
+      // Handle registration failure, e.g., showing an error message to the user
+    }
   };
 
   return (
@@ -16,26 +51,27 @@ const SignUp = () => {
       </Link>
       <h2>Sign Up</h2>
       <form onSubmit={handleSubmit}>
+        {/* Form fields remain the same, just add onChange to each input */}
         <div className="formGroup">
           <label htmlFor="fullName">Full Name</label>
-          <input type="text" id="fullName" name="fullName" required />
+          <input type="text" id="fullName" name="fullName" required onChange={handleChange} />
         </div>
         <div className="formGroup">
           <label htmlFor="username">Username</label>
-          <input type="text" id="username" name="username" required />
+          <input type="text" id="username" name="username" required onChange={handleChange} />
         </div>
         <div className="formGroup">
           <label htmlFor="email">Email</label>
-          <input type="email" id="email" name="email" required />
+          <input type="email" id="email" name="email" required onChange={handleChange} />
         </div>
         <div className="formGroup">
           <label htmlFor="phone">Phone Number</label>
-          <input type="tel" id="phone" name="phone" required pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" />
+          <input type="tel" id="phone" name="phone" required pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" onChange={handleChange} />
           <small>Format: 123-456-7890</small>
         </div>
         <div className="formGroup">
           <label htmlFor="password">Password</label>
-          <input type="password" id="password" name="password" required />
+          <input type="password" id="password" name="password" required onChange={handleChange} />
         </div>
         <button type="submit">Sign Up</button>
       </form>

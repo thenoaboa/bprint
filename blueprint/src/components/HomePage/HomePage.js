@@ -14,8 +14,10 @@ const HomePage = () => {
       <button className="hamburgerButton" onClick={togglePanel}>☰</button>
       {isPanelOpen && (
         <div className="navigationPanel">
-          <Link to="/login">Login</Link>
-          <Link to="/signup">Sign Up</Link>
+          <Link to="/">Home</Link>
+          <Link to="/login">Login/Sign Up</Link>
+          <Link to="/create-project">New Project</Link>
+          <Link to="/projects">Saved Projects</Link>
         </div>
       )}
       <div className="centerButtons">

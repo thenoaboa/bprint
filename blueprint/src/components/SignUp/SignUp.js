@@ -18,6 +18,7 @@ const SignUp = () => {
   };
 
   const handleSubmit = async (event) => {
+    console.log('Registration Button Clicked');
     event.preventDefault();
     const registerUrl = 'http://localhost:5000/api/auth/register';
 

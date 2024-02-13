@@ -6,6 +6,7 @@ const User = require('../models/User');
 const router = express.Router();
 
 router.post('/register', async (req, res) => {
+  console.log("Attempting to register a user", req.body);
   try {
     // Check if the user already exists
     const userExists = await User.findOne({ email: req.body.email });
@@ -32,6 +33,7 @@ router.post('/register', async (req, res) => {
 });
 
 router.post('/login', async (req, res) => {
+  console.log("Attempting to Login a user", req.body);
     try {
       // Find the user by email
       const user = await User.findOne({ email: req.body.email });

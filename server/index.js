@@ -6,8 +6,13 @@ const authenticate = require('./middleware/authenticate');
 const { MongoClient } = require('mongodb');
 const uri = process.env.DB_URI; // Ensure this is correctly loaded from your .env file
 
+const corsOptions = {
+    origin: 'https://vigilant-space-chainsaw-ppwpq44r5pj365xw-3000.app.github.dev', // or use a pattern to match your development and production domains
+    optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+};
+
 const app = express(); // Define the app with express()
-app.use(cors()); // Use cors middleware
+app.use(cors(corsOptions)); // Use cors middleware
 app.use(express.json()); // Middleware for parsing JSON bodies
 app.use('/api/auth', authRoutes); // Use authentication routes
 

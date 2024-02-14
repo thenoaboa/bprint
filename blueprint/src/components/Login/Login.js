@@ -10,7 +10,7 @@ function Login() {
     const handleSubmit = async (event) => {
         console.log('Login Button Clicked');
         event.preventDefault();
-        const loginUrl = 'http://localhost:3000/api/auth/login';
+        const loginUrl = 'https://vigilant-space-chainsaw-ppwpq44r5pj365xw-5000.app.github.dev/api/auth/login';
 
         try {
             const response = await fetch(loginUrl, {

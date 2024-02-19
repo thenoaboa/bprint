@@ -74,6 +74,7 @@ Bprint
 │   │   ├── logo.svg
 │   │   ├── reportWebVitals.js
 │   │   └── setupTest.js
+│   ├── .env
 │   ├── .gitignore
 │   ├── package-lock.json
 │   └── package.json

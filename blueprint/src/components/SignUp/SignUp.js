@@ -20,18 +20,23 @@ const SignUp = () => {
   const handleSubmit = async (event) => {
     console.log('Registration Button Clicked');
     event.preventDefault();
-    const registerUrl = 'https://vigilant-space-chainsaw-ppwpq44r5pj365xw-5000.app.github.dev/api/auth/register';
+    
+    // Use environment variables here
+    const registerUrl = process.env.REACT_APP_REGISTER_URL;
+    const apiKey = process.env.REACT_APP_API_KEY;
+  
     try {
       const response = await fetch(registerUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'api-key': apiKey,
         },
         body: JSON.stringify(formData),
       });
-
+  
       const data = await response.json();
-
+  
       if (response.ok) {
         console.log('Registration successful', data);
         navigate('/login'); // Redirect user to login page after successful registration

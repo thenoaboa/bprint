@@ -18,19 +18,17 @@ const SignUp = () => {
   };
 
   const handleSubmit = async (event) => {
-    console.log('Registration Button Clicked');
     event.preventDefault();
-    
-    // Use environment variables here
-    const registerUrl = process.env.REACT_APP_REGISTER_URL;
-    //const apiKey = process.env.REACT_APP_API_KEY;
+    console.log('Registration Button Clicked', formData);
+  
+    // This should be the URL to your server's registration endpoint
+    const registerUrl = "/api/auth/register";
   
     try {
       const response = await fetch(registerUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          //'api-key': apiKey,
         },
         body: JSON.stringify(formData),
       });

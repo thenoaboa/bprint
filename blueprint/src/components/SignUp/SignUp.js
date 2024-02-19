@@ -23,14 +23,14 @@ const SignUp = () => {
     
     // Use environment variables here
     const registerUrl = process.env.REACT_APP_REGISTER_URL;
-    const apiKey = process.env.REACT_APP_API_KEY;
+    //const apiKey = process.env.REACT_APP_API_KEY;
   
     try {
       const response = await fetch(registerUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'api-key': apiKey,
+          //'api-key': apiKey,
         },
         body: JSON.stringify(formData),
       });

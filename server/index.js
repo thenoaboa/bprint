@@ -6,13 +6,12 @@ const authenticate = require('./middleware/authenticate');
 const { MongoClient } = require('mongodb');
 const uri = process.env.DB_URI; // Ensure this is correctly loaded from your .env file
 
-const corsOptions = {
-    origin: 'https://vigilant-space-chainsaw-ppwpq44r5pj365xw-3000.app.github.dev', // or use a pattern to match your development and production domains
-    optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
-};
-
 const app = express(); // Define the app with express()
-app.use(cors(corsOptions)); // Use cors middleware
+
+// Simplified CORS configuration for development
+// This allows requests from any origin
+app.use(cors());
+
 app.use(express.json()); // Middleware for parsing JSON bodies
 app.use('/api/auth', authRoutes); // Use authentication routes
 
@@ -36,10 +35,9 @@ app.get('/api/protected', authenticate, (req, res) => {
     res.send('Access granted to protected content');
 });
 
-app.get('/', (req, res) => { //NEW CODE
+app.get('/', (req, res) => {
     res.send('Welcome to the API');
-  });
-  
+});
 
 // Only one app.listen() call is necessary
 initializeDbConnection().then(() => {

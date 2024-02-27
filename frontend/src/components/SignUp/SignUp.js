@@ -21,8 +21,8 @@ const SignUp = () => {
     event.preventDefault();
     console.log('Registration Button Clicked', formData);
   
-    // This should be the URL to your server's registration endpoint
-    const registerUrl = "/api/auth/register";
+    // Update this URL to the location where your backend is running
+    const registerUrl = process.env.REACT_APP_BACKEND_URL + "/api/auth/register";
   
     try {
       const response = await fetch(registerUrl, {

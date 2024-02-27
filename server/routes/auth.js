@@ -1,17 +1,28 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const fetch = require('node-fetch'); // Ensure 'node-fetch' is installed
-require('dotenv').config(); // Ensure environment variables are loaded
-const User = require('../models/User');
+const fetch = require('node-fetch');
+require('dotenv').config();
 
 const router = express.Router();
 
 router.post('/register', async (req, res) => {
-  console.log("Attempting to register a user via MongoDB Data API", req.body);
+  const { fullName, username, email, phone, password } = req.body;
+
+  // Hash the password using bcrypt
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  // Prepare the document to insert
+  const userDocument = {
+    fullName,
+    username,
+    email,
+    phone,
+    password: hashedPassword, // Store the hashed password
+  };
+
   try {
-    // Prepare the request to MongoDB Data API
-    const response = await fetch(`${process.env.MONGODB_DATA_API_URL}/action/insertOne`, {
+    const apiResponse = await fetch(`${process.env.MONGODB_DATA_API_URL}/action/insertOne`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -20,25 +31,18 @@ router.post('/register', async (req, res) => {
       body: JSON.stringify({
         dataSource: process.env.MONGODB_DATA_SOURCE,
         database: process.env.MONGODB_DATABASE,
-        collection: 'users',
-        document: {
-          username: req.body.username,
-          email: req.body.email,
-          // Consider hashing the password before sending
-          password: await bcrypt.hash(req.body.password, 10),
-        }
-      })
+        collection: process.env.MONGODB_COLLECTION,
+        document: userDocument,
+      }),
     });
 
-    const data = await response.json();
-    if (response.ok) {
-      console.log('User registered successfully via MongoDB Data API', data);
-      res.status(201).json({ message: 'User created' });
-    } else {
-      throw new Error(data.error || 'An error occurred during registration with MongoDB Data API.');
-    }
+    const data = await apiResponse.json();
+    if (!apiResponse.ok) throw new Error(data.error || 'Failed to register user');
+
+    console.log('User registered successfully', data);
+    res.status(201).json({ message: 'User registered successfully' });
   } catch (error) {
-    console.error("Error registering new user via MongoDB Data API:", error);
+    console.error('Error registering user:', error);
     res.status(500).json({ error: error.message });
   }
 });

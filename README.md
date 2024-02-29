@@ -1,9 +1,9 @@
-# Blueprint Interactive Viewer
+# Interactive Blueprint
 
 ## Overview
-Blueprint Interactive Viewer is a dynamic tool designed to revolutionize the way blueprints and detailed schematics are interacted with and understood. Developed by Merced and Noah, this application allows users to upload images of blueprints or items, providing a user-friendly interface to place interactive buttons on various parts of the uploaded image. Clicking these buttons reveals detailed information about the specific components, ranging from major parts used in large machinery to minor elements like small screws.
+Interactive Blueprint is a dynamic tool designed to revolutionize the way blueprints and detailed schematics are interacted with and understood. Developed by Noah and Merced, this application allows users to upload images of blueprints or items, providing a user-friendly interface to place interactive buttons on various parts of the uploaded image. Clicking these buttons reveals detailed information about the specific components, ranging from major parts used in large machinery to minor elements like small screws.
 
-Beyond merely offering insights into projects and their components, Blueprint Interactive Viewer facilitates a deeper understanding of assembly processes, component functions, and overall project layout. It serves as an invaluable resource for engineers, architects, hobbyists, and anyone in need of detailed project schematics.
+Beyond merely offering insights into projects and their components, Interactive Blueprint facilitates a deeper understanding of assembly processes, component functions, and overall project layout. It serves as an invaluable resource for engineers, architects, hobbyists, and anyone in need of detailed project schematics.
 
 ## Features
 - **Image Upload:** Users can upload images of blueprints or schematics for interactive viewing.

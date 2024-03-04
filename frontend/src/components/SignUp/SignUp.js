@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { FaCheck, FaTimes, FaSpinner } from 'react-icons/fa'; // Import icons
 import './SignUp.css';
 
 const SignUp = () => {
@@ -11,25 +12,53 @@ const SignUp = () => {
     password: '',
   });
 
+  const [usernameAvailable, setUsernameAvailable] = useState(null); // null, true, or false
+  const [checkingUsername, setCheckingUsername] = useState(false);
+
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    if (name === "phone") {
+      // Format phone number here if needed
+      const formattedPhone = value.replace(/[^\d]/g, '').replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3').slice(0, 12);
+      setFormData({ ...formData, [name]: formattedPhone });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
+
+    if (name === "username") {
+      setUsernameAvailable(null); // Reset username availability check when the username is changed
+    }
+  };
+
+  const checkUsernameAvailability = async () => {
+    setCheckingUsername(true);
+    try {
+      // Implement the API call to your backend to check username availability
+      const response = await fetch(`/api/check-username?username=${formData.username}`);
+      const { available } = await response.json();
+      setUsernameAvailable(available);
+    } catch (error) {
+      console.error('Error checking username availability:', error);
+    }
+    setCheckingUsername(false);
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    if (usernameAvailable !== true) {
+      alert('Please check if the username is available and try again.');
+      return;
+    }
     console.log('Registration Button Clicked', formData);
-  
-    // Update this URL to the location where your backend is running
+
     const registerUrl = process.env.REACT_APP_BACKEND_URL + "/api/auth/register";
   
     try {
       const response = await fetch(registerUrl, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(formData),
       });
   
@@ -59,9 +88,12 @@ const SignUp = () => {
           <label htmlFor="fullName">Full Name</label>
           <input type="text" id="fullName" name="fullName" required onChange={handleChange} />
         </div>
-        <div className="formGroup">
+        <div className="formGroup usernameGroup">
           <label htmlFor="username">Username</label>
           <input type="text" id="username" name="username" required onChange={handleChange} />
+          <button type="button" onClick={checkUsernameAvailability} disabled={checkingUsername} className="checkUsernameBtn">
+            {checkingUsername ? <FaSpinner /> : usernameAvailable === null ? <FaSpinner /> : usernameAvailable ? <FaCheck color="green" /> : <FaTimes color="red" />}
+          </button>
         </div>
         <div className="formGroup">
           <label htmlFor="email">Email</label>
@@ -76,7 +108,7 @@ const SignUp = () => {
           <label htmlFor="password">Password</label>
           <input type="password" id="password" name="password" required onChange={handleChange} />
         </div>
-        <button type="submit">Sign Up</button>
+        <button type="submit" disabled={usernameAvailable !== true}>Sign Up</button>
       </form>
       <Link to="/login">Already have an account? Login</Link>
     </div>

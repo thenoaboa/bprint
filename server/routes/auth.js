@@ -6,6 +6,12 @@ require('dotenv').config();
 
 const router = express.Router();
 
+router.get('/check-username', async (req, res) => {
+  const { username } = req.query;
+  const userExists = await User.findOne({ username }).exec();
+  res.json({ available: !userExists });
+});
+
 router.post('/register', async (req, res) => {
   const { fullName, username, email, phone, password } = req.body;
 

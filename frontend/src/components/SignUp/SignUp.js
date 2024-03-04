@@ -88,12 +88,14 @@ const SignUp = () => {
           <label htmlFor="fullName">Full Name</label>
           <input type="text" id="fullName" name="fullName" required onChange={handleChange} />
         </div>
-        <div className="formGroup usernameGroup">
-          <label htmlFor="username">Username</label>
-          <input type="text" id="username" name="username" required onChange={handleChange} />
-          <button type="button" onClick={checkUsernameAvailability} disabled={checkingUsername} className="checkUsernameBtn">
-            {checkingUsername ? <FaSpinner /> : usernameAvailable === null ? <FaSpinner /> : usernameAvailable ? <FaCheck color="green" /> : <FaTimes color="red" />}
-          </button>
+        <div className="formGroup">
+        <label htmlFor="username">Username</label>
+          <div className='UsernameGroup'>
+            <input type="text" id="username" name="username" required onChange={handleChange} />
+            <button type="button" onClick={checkUsernameAvailability} disabled={checkingUsername} className="checkUsernameBtn">
+              {checkingUsername ? <FaSpinner /> : usernameAvailable === null ? <FaSpinner /> : usernameAvailable ? <FaCheck color="green" /> : <FaTimes color="red" />}
+            </button>
+          </div>
         </div>
         <div className="formGroup">
           <label htmlFor="email">Email</label>

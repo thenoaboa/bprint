@@ -33,6 +33,7 @@ const SignUp = () => {
   };
 
   const checkUsernameAvailability = async () => {
+    // we have a error for checking username availability, 
     setCheckingUsername(true);
     try {
       // Implement the API call to your backend to check username availability

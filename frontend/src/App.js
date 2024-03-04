@@ -8,7 +8,7 @@ import ProjectsPage from './components/ProjectsPage/ProjectsPage';
 import CreateProject from './components/CreateProject/CreateProject';
 
 function App() {
-  return (
+  return ( 
     <Router>
       <Routes>
         <Route path="/" element={<HomePage />} />

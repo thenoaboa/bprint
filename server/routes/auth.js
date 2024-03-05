@@ -8,8 +8,31 @@ const router = express.Router();
 
 router.get('/check-username', async (req, res) => {
   const { username } = req.query;
-  const userExists = await User.findOne({ username }).exec();
-  res.json({ available: !userExists });
+  try {
+    const apiResponse = await fetch(`${process.env.MONGODB_DATA_API_URL}/action/findOne`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'api-key': process.env.MONGODB_DATA_API_KEY,
+      },
+      body: JSON.stringify({
+        dataSource: process.env.MONGODB_DATA_SOURCE,
+        database: process.env.MONGODB_DATABASE,
+        collection: process.env.MONGODB_COLLECTION,
+        filter: { username: username }
+      }),
+    });
+
+    const data = await apiResponse.json();
+    if (data.document) {
+      res.json({ available: false });
+    } else {
+      res.json({ available: true });
+    }
+  } catch (error) {
+    console.error('Error checking username availability:', error);
+    res.status(500).json({ error: 'Error checking username availability' });
+  }
 });
 
 router.post('/register', async (req, res) => {

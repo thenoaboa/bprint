@@ -36,8 +36,7 @@ const SignUp = () => {
     // we have a error for checking username availability, 
     setCheckingUsername(true);
     try {
-      // Implement the API call to your backend to check username availability
-      const response = await fetch(`/api/check-username?username=${formData.username}`);
+      const response = await fetch(process.env.REACT_APP_BACKEND_URL + `/api/auth/check-username?username=${formData.username}`);
       const { available } = await response.json();
       setUsernameAvailable(available);
     } catch (error) {

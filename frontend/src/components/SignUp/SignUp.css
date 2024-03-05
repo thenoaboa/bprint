@@ -101,3 +101,7 @@ button:hover {
 .checkUsernameBtn.unavailable {
     background-color: #dc3545; /* Red for unavailable */
 }
+
+.invalidLabel {
+    color: red;
+}

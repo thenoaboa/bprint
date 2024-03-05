@@ -38,20 +38,9 @@ router.get('/check-username', async (req, res) => {
 router.post('/register', async (req, res) => {
   const { fullName, username, email, phone, password } = req.body;
 
-  // Hash the password using bcrypt
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  // Prepare the document to insert
-  const userDocument = {
-    fullName,
-    username,
-    email,
-    phone,
-    password: hashedPassword, // Store the hashed password
-  };
-
   try {
-    const apiResponse = await fetch(`${process.env.MONGODB_DATA_API_URL}/action/insertOne`, {
+    // Check for existing email
+    let apiResponse = await fetch(`${process.env.MONGODB_DATA_API_URL}/action/findOne`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -61,14 +50,63 @@ router.post('/register', async (req, res) => {
         dataSource: process.env.MONGODB_DATA_SOURCE,
         database: process.env.MONGODB_DATABASE,
         collection: process.env.MONGODB_COLLECTION,
-        document: userDocument,
+        filter: { email: email }
       }),
     });
 
-    const data = await apiResponse.json();
+    let data = await apiResponse.json();
+    if (data.document) {
+      return res.status(400).json({ error: 'email_exists', message: 'Email already exists' });
+    }
+
+    // Check for existing phone
+    apiResponse = await fetch(`${process.env.MONGODB_DATA_API_URL}/action/findOne`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'api-key': process.env.MONGODB_DATA_API_KEY,
+      },
+      body: JSON.stringify({
+        dataSource: process.env.MONGODB_DATA_SOURCE,
+        database: process.env.MONGODB_DATABASE,
+        collection: process.env.MONGODB_COLLECTION,
+        filter: { phone: phone }
+      }),
+    });
+    
+    data = await apiResponse.json();
+    // Assuming a response with a document indicates existence
+    if (data.document) {
+      return res.status(400).json({ error: 'phone_exists', message: 'Phone number already exists' });
+    }
+
+    // Hash the password using bcrypt
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Prepare and insert the new user document
+    apiResponse = await fetch(`${process.env.MONGODB_DATA_API_URL}/action/insertOne`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'api-key': process.env.MONGODB_DATA_API_KEY,
+      },
+      body: JSON.stringify({
+        dataSource: process.env.MONGODB_DATA_SOURCE,
+        database: process.env.MONGODB_DATABASE,
+        collection: process.env.MONGODB_COLLECTION,
+        document: {
+          fullName,
+          username,
+          email,
+          phone,
+          password: hashedPassword,
+        },
+      }),
+    });
+
+    data = await apiResponse.json();
     if (!apiResponse.ok) throw new Error(data.error || 'Failed to register user');
 
-    console.log('User registered successfully', data);
     res.status(201).json({ message: 'User registered successfully' });
   } catch (error) {
     console.error('Error registering user:', error);

@@ -11,7 +11,7 @@ const SignUp = () => {
     phone: '',
     password: '',
   });
-                        //warning here
+
   const [inputValidity, setInputValidity] = useState({
     fullName: true,
     username: true,
@@ -51,58 +51,56 @@ const SignUp = () => {
   const checkUsernameAvailability = async () => {
     setCheckingUsername(true);
     try {
-      const response = await fetch(process.env.REACT_APP_BACKEND_URL+`/api/auth/check-username?username=${formData.username}`, {
-        method: 'GET',
-      });
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/check-username?username=${formData.username}`);
       if (!response.ok) throw new Error('Failed to check username availability');
       const data = await response.json();
       setUsernameAvailable(data.available);
-      setInputValidity(prev => ({ ...prev, username: data.available }));
+      // Set input validity for username based on availability
+      setInputValidity((prev) => ({ ...prev, username: data.available }));
+      // Update the warning message based on username availability
+      setWarningMessage(data.available ? '' : 'Username Taken');
       setCheckingUsername(false);
     } catch (error) {
       console.error('Error checking username availability:', error);
       setCheckingUsername(false);
       setUsernameAvailable(false);
+      // In case of an error, consider showing a generic error message
+      setWarningMessage('Error checking username. Try again.');
     }
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    
-    // Check if the username is blank
-  if (!formData.username) {
-    setWarningMessage('Username is required.');
-    console.log(warningMessage);
-    return;
-  }
+    setCheckingUsername(true);
 
-  // Check if the username is not available
-  if (usernameAvailable === false) {
-    setWarningMessage('Please choose a username that is available.');
-    console.log(warningMessage);
-    return;
-  }
-
-    console.log('Registration Button Clicked', formData);
-  
     try {
-      const response = await fetch(process.env.REACT_APP_BACKEND_URL + "/api/auth/register", {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/register`, {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
   
       const data = await response.json();
   
-      if (response.ok) {
-        console.log('Registration successful', data);
-        navigate('/login'); // Redirect user to login page after successful registration
+      if (!response.ok) {
+        // Handle different error cases based on the server response
+        if (data.error === 'email_exists') {
+          setInputValidity(prev => ({ ...prev, email: false }));
+          setWarningMessage({ email: 'Email Already Exists, Please Login.' });
+        } else if (data.error === 'phone_exists') {
+          setInputValidity(prev => ({ ...prev, phone: false }));
+          setWarningMessage({ phone: 'Number Exists, Please Login.' });
+        } else {
+          throw new Error(data.message || 'An error occurred during registration.');
+        }
       } else {
-        throw new Error(data.message || 'An error occurred during registration.');
+        console.log('Registration successful', data);
+        navigate('/login');
       }
     } catch (error) {
       console.error('Registration failed:', error.message);
-      // Handle registration failure, e.g., showing an error message to the user
+    } finally {
+      setCheckingUsername(false);
     }
   };
 
@@ -118,36 +116,44 @@ const SignUp = () => {
           <label htmlFor="fullName">Full Name</label>
           <input type="text" id="fullName" name="fullName" required onChange={handleChange} />
         </div>
+
+
         <div className="formGroup">
           <label htmlFor="username" style={{ color: inputValidity.username ? 'black' : 'red' }}>Username</label>
           <div className='UsernameGroup'>
             <input type="text" id="username" name="username" required onChange={handleChange} />
-            <button type="button" onClick={checkUsernameAvailability} disabled={checkingUsername} className="checkUsernameBtn">
-              {checkingUsername ? <FaSpinner /> : usernameAvailable === null ? <FaSpinner /> : usernameAvailable ? <FaCheck color="green" /> : <FaTimes color="red" />}
+            <button type="button" onClick={checkUsernameAvailability} disabled={checkingUsername} className={`checkUsernameBtn ${
+              checkingUsername ? 'loading' : usernameAvailable === true ? 'available' : usernameAvailable === false ? 'unavailable' : ''
+            }`}>
+                {checkingUsername ? <FaSpinner color="white" /> : usernameAvailable === null ? <FaSpinner color="white" /> : usernameAvailable ? <FaCheck color="white" /> : <FaTimes color="white" />}
             </button>
           </div>
           {!inputValidity.username && (
-              <div style={{ color: 'red' }}>Please enter a valid username.</div>
+            <div style={{ color: 'red' }}>{warningMessage}</div>
           )}
         </div>
+
+
+
         <div className="formGroup">
           <label htmlFor="email">Email</label>
           <input type="email" id="email" name="email" required onChange={handleChange} />
+          {!inputValidity.email && (
+            <div style={{ color: 'red' }}>{warningMessage.email}</div>
+          )}
         </div>
         <div className="formGroup">
           <label htmlFor="phone">Phone Number</label>
           <input type="tel" id="phone" name="phone" required pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" onChange={handleChange} />
           <small>Format: 123-456-7890</small>
+          {!inputValidity.phone && (
+            <div style={{ color: 'red' }}>{warningMessage.phone}</div>
+          )}
         </div>
         <div className="formGroup">
           <label htmlFor="password">Password</label>
           <input type="password" id="password" name="password" required onChange={handleChange} />
         </div>
-        {warningMessage && (
-          <div className="warningMessage">
-            {warningMessage}
-          </div>
-        )}
         <button type="submit" disabled={usernameAvailable !== true}>Sign Up</button>
       </form>
       <Link to="/login">Already have an account? Login</Link>

@@ -1,4 +1,7 @@
 .signUpPage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     max-width: 400px;
     margin: 20px auto;
     padding: 20px;
@@ -13,7 +16,6 @@
   
 .formGroup {
     margin-bottom: 15px;
-    margin-right: 15px;
 }
 
 .UsernameGroup {
@@ -38,17 +40,10 @@
     background-color: #ccc;
     cursor: not-allowed;
 }
-  
-.formGroup label {
-    display: block;
-    margin-bottom: 5px;
-}
-  
-.formGroup input {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+
+.formGroup label, .formGroup input {
+    max-width: 100%; /* Ensures these elements don't expand beyond their parent */
+    box-sizing: border-box; /* Ensures padding and borders are included in the width */
 }
   
 button {
@@ -102,6 +97,26 @@ button:hover {
     background-color: #dc3545; /* Red for unavailable */
 }
 
+.warningMessage {
+    width: auto; /* Adapts to the content width up to the parent container's max width */
+    max-width: calc(100% - 20px); /* Ensures some padding inside the signUpPage container */
+}
+
 .invalidLabel {
     color: red;
+    font-size: 0.9em; 
+    font-style: italic;
+    margin-top: 5px;
+    font-weight: lighter;
+    width: 100%;
+}
+
+.invalidInput {
+    border-color: red;
+    background-color: #ffcccc; 
+}
+
+.warningContainer {
+    margin: 0 auto;
+    text-align: center;
 }

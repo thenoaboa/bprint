@@ -37,54 +37,29 @@ router.get('/check-username', async (req, res) => {
 
 router.post('/register', async (req, res) => {
   const { fullName, username, email, phone, password } = req.body;
+  let errors = {};
 
   try {
-    // Check for existing email
-    let apiResponse = await fetch(`${process.env.MONGODB_DATA_API_URL}/action/findOne`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'api-key': process.env.MONGODB_DATA_API_KEY,
-      },
-      body: JSON.stringify({
-        dataSource: process.env.MONGODB_DATA_SOURCE,
-        database: process.env.MONGODB_DATABASE,
-        collection: process.env.MONGODB_COLLECTION,
-        filter: { email: email }
-      }),
-    });
-
-    let data = await apiResponse.json();
-    if (data.document) {
-      return res.status(400).json({ error: 'email_exists', message: 'Email already exists' });
+    let emailExists = await checkIfExists({ email });
+    if (emailExists) {
+      errors.email = 'Email already exists';
     }
 
-    // Check for existing phone
-    apiResponse = await fetch(`${process.env.MONGODB_DATA_API_URL}/action/findOne`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'api-key': process.env.MONGODB_DATA_API_KEY,
-      },
-      body: JSON.stringify({
-        dataSource: process.env.MONGODB_DATA_SOURCE,
-        database: process.env.MONGODB_DATABASE,
-        collection: process.env.MONGODB_COLLECTION,
-        filter: { phone: phone }
-      }),
-    });
-    
-    data = await apiResponse.json();
-    // Assuming a response with a document indicates existence
-    if (data.document) {
-      return res.status(400).json({ error: 'phone_exists', message: 'Phone number already exists' });
+    // Check phone
+    let phoneExists = await checkIfExists({ phone });
+    if (phoneExists) {
+      errors.phone = 'Phone number already exists';
+    }
+
+    if (Object.keys(errors).length > 0) {
+      return res.status(400).json(errors);
     }
 
     // Hash the password using bcrypt
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Prepare and insert the new user document
-    apiResponse = await fetch(`${process.env.MONGODB_DATA_API_URL}/action/insertOne`, {
+    const apiResponse = await fetch(`${process.env.MONGODB_DATA_API_URL}/action/insertOne`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -104,8 +79,8 @@ router.post('/register', async (req, res) => {
       }),
     });
 
-    data = await apiResponse.json();
-    if (!apiResponse.ok) throw new Error(data.error || 'Failed to register user');
+    const insertData = await apiResponse.json();
+    if (!apiResponse.ok) throw new Error(insertData.error || 'Failed to register user');
 
     res.status(201).json({ message: 'User registered successfully' });
   } catch (error) {
@@ -113,6 +88,21 @@ router.post('/register', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+async function checkIfExists(filter) {
+  const apiResponse = await fetch(`${process.env.MONGODB_DATA_API_URL}/action/findOne`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'api-key': process.env.MONGODB_DATA_API_KEY },
+    body: JSON.stringify({
+      dataSource: process.env.MONGODB_DATA_SOURCE,
+      database: process.env.MONGODB_DATABASE,
+      collection: process.env.MONGODB_COLLECTION,
+      filter: filter
+    }),
+  });
+  const data = await apiResponse.json();
+  return !!data.document; // Return true if document exists, false otherwise
+}
 
 router.post('/login', async (req, res) => {
   console.log("Attempting to Login a user", req.body);

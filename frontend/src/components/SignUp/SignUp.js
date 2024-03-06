@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaCheck, FaTimes, FaSpinner } from 'react-icons/fa'; // Import icons
 import './SignUp.css';
@@ -18,33 +18,47 @@ const SignUp = () => {
     email: true,
     phone: true,
     password: true,
-});
+  });
 
-  const [warningMessage, setWarningMessage] = useState('Test warning message');
-  const [usernameAvailable, setUsernameAvailable] = useState(null); // null, true, or false
+  // Initialize warningMessage as an object to store messages for individual fields
+  const [warningMessage, setWarningMessage] = useState({});
+  const [usernameAvailable, setUsernameAvailable] = useState(null);
   const [checkingUsername, setCheckingUsername] = useState(false);
 
-  useEffect(() => {
-    console.log(warningMessage); // This logs whenever warningMessage changes.
-  }, [warningMessage]);
-  
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+    // Resetting specific warning message and validity on change for all inputs
+    setWarningMessage((prevMessages) => ({ ...prevMessages, [name]: '' }));
+    setInputValidity((prevValidity) => ({ ...prevValidity, [name]: true }));
+
     if (name === 'phone') {
-      // Remove non-numeric characters and slice to max 10 characters
+      // Your existing phone formatting logic
       const numericValue = value.replace(/\D/g, '').slice(0, 10);
-      // Automatically add dashes for readability
       const formattedValue = numericValue.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
       setFormData({ ...formData, [name]: formattedValue });
+    } else if (name === 'password') {
+      // New password validation logic
+      const minLength = 8;
+      const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(value);
+      if (value.length < minLength || !hasSpecialChar) {
+        setInputValidity((prev) => ({ ...prev, [name]: false }));
+        setWarningMessage((prev) => ({
+          ...prev,
+          [name]: `At least ${minLength} characters long, At least one special character.`,
+        }));
+      }
+      setFormData({ ...formData, [name]: value });
     } else {
+      // Handle all other inputs
       setFormData({ ...formData, [name]: value });
     }
 
+    // Reset username availability on username change
     if (name === "username") {
-      setUsernameAvailable(null); // Reset username availability check when the username is changed
-      setWarningMessage('');
+      setUsernameAvailable(null);
     }
   };
 
@@ -72,7 +86,7 @@ const SignUp = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     setCheckingUsername(true);
-
+  
     try {
       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/register`, {
         method: 'POST',
@@ -83,19 +97,17 @@ const SignUp = () => {
       const data = await response.json();
   
       if (!response.ok) {
-        // Handle different error cases based on the server response
-        if (data.error === 'email_exists') {
-          setInputValidity(prev => ({ ...prev, email: false }));
-          setWarningMessage({ email: 'Email Already Exists, Please Login.' });
-        } else if (data.error === 'phone_exists') {
-          setInputValidity(prev => ({ ...prev, phone: false }));
-          setWarningMessage({ phone: 'Number Exists, Please Login.' });
-        } else {
-          throw new Error(data.message || 'An error occurred during registration.');
-        }
+        // Update inputValidity based on the errors returned
+        setInputValidity(prev => ({
+          ...prev,
+          email: !data.email,
+          phone: !data.phone,
+        }));
+        // Update warningMessage based on the errors returned
+        setWarningMessage(data);
       } else {
         console.log('Registration successful', data);
-        navigate('/login');
+        navigate('/login'); // Redirect to login
       }
     } catch (error) {
       console.error('Registration failed:', error.message);
@@ -111,13 +123,10 @@ const SignUp = () => {
       </Link>
       <h2>Sign Up</h2>
       <form onSubmit={handleSubmit}>
-        {/* Form fields remain the same, just add onChange to each input */}
         <div className="formGroup">
           <label htmlFor="fullName">Full Name</label>
           <input type="text" id="fullName" name="fullName" required onChange={handleChange} />
         </div>
-
-
         <div className="formGroup">
           <label htmlFor="username" style={{ color: inputValidity.username ? 'black' : 'red' }}>Username</label>
           <div className='UsernameGroup'>
@@ -132,29 +141,35 @@ const SignUp = () => {
             <div style={{ color: 'red' }}>{warningMessage}</div>
           )}
         </div>
-
-
-
         <div className="formGroup">
-          <label htmlFor="email">Email</label>
+          <label htmlFor="email" style={{ color: inputValidity.email ? 'black' : 'red' }}>Email</label>
           <input type="email" id="email" name="email" required onChange={handleChange} />
-          {!inputValidity.email && (
-            <div style={{ color: 'red' }}>{warningMessage.email}</div>
-          )}
+          {warningMessage.email && <div style={{ color: 'red' }}>{warningMessage.email}</div>}
         </div>
         <div className="formGroup">
-          <label htmlFor="phone">Phone Number</label>
-          <input type="tel" id="phone" name="phone" required pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" onChange={handleChange} />
-          <small>Format: 123-456-7890</small>
-          {!inputValidity.phone && (
-            <div style={{ color: 'red' }}>{warningMessage.phone}</div>
+          <label htmlFor="phone" style={{ color: inputValidity.phone ? 'black' : 'red' }}>Phone Number</label>
+          <input type="tel" id="phone" name="phone" required onChange={handleChange} />
+          {warningMessage.phone && <div style={{ color: 'red' }}>{warningMessage.phone}</div>}
+        </div>
+
+
+        <div className="formGroup">
+          <label htmlFor="password" style={{ color: inputValidity.password ? 'black' : 'red' }}>Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            required
+            onChange={handleChange}
+            className={inputValidity.password ? '' : 'invalidInput'}
+          />
+          {!inputValidity.password && (
+            <div className="warningContainer">
+              <div className="invalidLabel">{warningMessage.password}</div>
+            </div>
           )}
         </div>
-        <div className="formGroup">
-          <label htmlFor="password">Password</label>
-          <input type="password" id="password" name="password" required onChange={handleChange} />
-        </div>
-        <button type="submit" disabled={usernameAvailable !== true}>Sign Up</button>
+        <button type="submit" disabled={usernameAvailable !== true || checkingUsername}>Sign Up</button>
       </form>
       <Link to="/login">Already have an account? Login</Link>
     </div>

@@ -4,6 +4,7 @@ import { FaCheck, FaTimes, FaSpinner } from 'react-icons/fa'; // Import icons
 import './SignUp.css';
 
 const SignUp = () => {
+  // Initialize formData with all fields set to empty strings
   const [formData, setFormData] = useState({
     fullName: '',
     username: '',
@@ -12,53 +13,102 @@ const SignUp = () => {
     password: '',
   });
 
+  // Initialize inputValidity to track the validation state of each field
   const [inputValidity, setInputValidity] = useState({
     fullName: true,
-    username: true,
+    username: true, // Initially consider all fields valid
     email: true,
     phone: true,
     password: true,
   });
 
-  // Initialize warningMessage as an object to store messages for individual fields
-  const [warningMessage, setWarningMessage] = useState({});
+  // Initialize warningMessage to hold validation messages
+  const [warningMessage, setWarningMessage] = useState({
+    fullName: '',
+    username: '',
+    email: '',
+    phone: '',
+    password: '',
+  });
+
   const [usernameAvailable, setUsernameAvailable] = useState(null);
   const [checkingUsername, setCheckingUsername] = useState(false);
-
   const navigate = useNavigate();
+
+  const validatePassword = (password) => {
+    const minLength = 8;
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    return password.length >= minLength && hasSpecialChar;
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    // Resetting specific warning message and validity on change for all inputs
-    setWarningMessage((prevMessages) => ({ ...prevMessages, [name]: '' }));
-    setInputValidity((prevValidity) => ({ ...prevValidity, [name]: true }));
+    // Always update form data
+    setFormData((prev) => ({ ...prev, [name]: value }));
 
-    if (name === 'phone') {
-      // Your existing phone formatting logic
-      const numericValue = value.replace(/\D/g, '').slice(0, 10);
-      const formattedValue = numericValue.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
-      setFormData({ ...formData, [name]: formattedValue });
-    } else if (name === 'password') {
-      // New password validation logic
-      const minLength = 8;
-      const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(value);
-      if (value.length < minLength || !hasSpecialChar) {
+    // Field is valid initially (this may be overridden by specific checks below)
+    setInputValidity((prev) => ({ ...prev, [name]: true }));
+    setWarningMessage((prev) => ({ ...prev, [name]: '' }));
+
+    // Check if the field is empty
+    const isFieldEmpty = value.trim() === '';
+    if (isFieldEmpty) {
+      setInputValidity((prev) => ({ ...prev, [name]: false }));
+      setWarningMessage((prev) => ({
+        ...prev,
+        [name]: 'Field cannot be empty',
+      }));
+      return; // No need to proceed with further checks if field is empty
+    }
+
+    if (name === 'username'){
+      //check username;
+      setUsernameAvailable(null);
+      
+      if (usernameAvailable === null && !isFieldEmpty) {
         setInputValidity((prev) => ({ ...prev, [name]: false }));
         setWarningMessage((prev) => ({
           ...prev,
-          [name]: `At least ${minLength} characters long, At least one special character.`,
+          [name]: 'Click button to check availability.',
         }));
       }
-      setFormData({ ...formData, [name]: value });
-    } else {
-      // Handle all other inputs
-      setFormData({ ...formData, [name]: value });
     }
 
-    // Reset username availability on username change
-    if (name === "username") {
-      setUsernameAvailable(null);
+    if (name === 'email'){
+      //check email;
+      const isValidEmail = /\S+@\S+\.\S+/.test(value);
+      if (!isValidEmail) {
+        setInputValidity((prev) => ({ ...prev, email: false }));
+        setWarningMessage((prev) => ({
+          ...prev,
+          email: "Invalid email format. Required '@' and '.'",
+        }));
+      }
+    }
+
+    if (name === 'phone'){
+      //check phone;
+      const isValidPhone = /^\d{10}$/.test(value.replace(/[\s-]/g, ''));
+      if (!isValidPhone) {
+        setInputValidity((prev) => ({ ...prev, phone: false }));
+        setWarningMessage((prev) => ({
+          ...prev,
+          phone: "Invalid Number, Required format '###-###-####' or without the '-'",
+        }));
+      }
+    }
+
+    if (name === 'password') {
+      //check password;
+      const isValidPassword = validatePassword(value);
+      if (!isValidPassword) {
+        setInputValidity((prev) => ({ ...prev, [name]: false }));
+        setWarningMessage((prev) => ({
+          ...prev,
+          [name]: 'Password must be at least 8 characters long and include a special character.',
+        }));
+      }
     }
   };
 
@@ -69,22 +119,54 @@ const SignUp = () => {
       if (!response.ok) throw new Error('Failed to check username availability');
       const data = await response.json();
       setUsernameAvailable(data.available);
-      // Set input validity for username based on availability
       setInputValidity((prev) => ({ ...prev, username: data.available }));
-      // Update the warning message based on username availability
-      setWarningMessage(data.available ? '' : 'Username Taken');
+      setWarningMessage((prev) => ({
+        ...prev,
+        username: data.available ? '' : 'Username is taken',
+      }));
       setCheckingUsername(false);
     } catch (error) {
       console.error('Error checking username availability:', error);
       setCheckingUsername(false);
       setUsernameAvailable(false);
       // In case of an error, consider showing a generic error message
-      setWarningMessage('Error checking username. Try again.');
+      setWarningMessage((prev) => ({ ...prev, username: 'Error checking username. Try again.' }));
     }
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    // Add a check here to automatically verify username availability if not already done
+    if (formData.username && usernameAvailable === null) {
+      await checkUsernameAvailability();
+    }
+
+    let formIsValid = true;
+    let newWarningMessages = {};
+
+    // Check each field for validity and update states accordingly
+    Object.keys(formData).forEach(key => {
+      if (!formData[key].trim()) {
+        formIsValid = false;
+        newWarningMessages[key] = 'Field cannot be empty';
+        setInputValidity(prev => ({ ...prev, [key]: false }));
+      }
+    });
+
+    if (usernameAvailable === false) {
+      formIsValid = false;
+      newWarningMessages['username'] = 'Username is taken';
+      setInputValidity(prev => ({ ...prev, username: false }));
+      //whats weird about username is that when the submit button is click and i have typed something i know is in the database into the field it then shows red label, red field, but no warning message. how do we get warning message?
+    }
+
+    setWarningMessage(newWarningMessages);
+
+    if (!formIsValid) {
+      return; // Prevent form submission if validation fails
+    }
+    
     setCheckingUsername(true);
   
     try {
@@ -123,53 +205,99 @@ const SignUp = () => {
       </Link>
       <h2>Sign Up</h2>
       <form onSubmit={handleSubmit}>
+        {/* Full Name */}
         <div className="formGroup">
-          <label htmlFor="fullName">Full Name</label>
-          <input type="text" id="fullName" name="fullName" required onChange={handleChange} />
+          <label htmlFor="fullName" style={{ color: inputValidity.fullName ? 'inherit' : 'red' }}>
+            Full Name
+          </label>
+          <input
+            type="text"
+            id="fullName"
+            name="fullName"
+            value={formData.fullName}
+            onChange={handleChange}
+            className={!inputValidity.fullName ? 'invalidInput' : ''}
+          />
+          {warningMessage.fullName && <div style={{ color: 'red' }}>{warningMessage.fullName}</div>}
         </div>
+
+        {/* Username */}
         <div className="formGroup">
-          <label htmlFor="username" style={{ color: inputValidity.username ? 'black' : 'red' }}>Username</label>
+          <label htmlFor="username" style={{ color: inputValidity.username ? 'inherit' : 'red' }}>
+            Username
+          </label>
           <div className='UsernameGroup'>
-            <input type="text" id="username" name="username" required onChange={handleChange} />
-            <button type="button" onClick={checkUsernameAvailability} disabled={checkingUsername} className={`checkUsernameBtn ${
-              checkingUsername ? 'loading' : usernameAvailable === true ? 'available' : usernameAvailable === false ? 'unavailable' : ''
-            }`}>
-                {checkingUsername ? <FaSpinner color="white" /> : usernameAvailable === null ? <FaSpinner color="white" /> : usernameAvailable ? <FaCheck color="white" /> : <FaTimes color="white" />}
+            <input
+              type="text"
+              id="username"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+              className={!inputValidity.username ? 'invalidInput' : ''}
+            />
+            <button
+              type="button"
+              onClick={checkUsernameAvailability}
+              disabled={checkingUsername}
+              className={`checkUsernameBtn ${
+                checkingUsername ? 'loading' : usernameAvailable === true ? 'available' : usernameAvailable === false ? 'unavailable' : ''
+              }`}
+            >
+              {checkingUsername ? <FaSpinner color="white" /> : usernameAvailable === null ? <FaSpinner color="white" /> : usernameAvailable ? <FaCheck color="white" /> : <FaTimes color="white" />}
             </button>
           </div>
-          {!inputValidity.username && (
-            <div style={{ color: 'red' }}>{warningMessage}</div>
-          )}
+          {warningMessage.username && <div style={{ color: 'red' }}>{warningMessage.username}</div>}
         </div>
+
+        {/* Email */}
         <div className="formGroup">
-          <label htmlFor="email" style={{ color: inputValidity.email ? 'black' : 'red' }}>Email</label>
-          <input type="email" id="email" name="email" required onChange={handleChange} />
+          <label htmlFor="email" style={{ color: inputValidity.email ? 'inherit' : 'red' }}>
+            Email
+          </label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            className={!inputValidity.email ? 'invalidInput' : ''}
+          />
           {warningMessage.email && <div style={{ color: 'red' }}>{warningMessage.email}</div>}
         </div>
+
+        {/* Phone Number */}
         <div className="formGroup">
-          <label htmlFor="phone" style={{ color: inputValidity.phone ? 'black' : 'red' }}>Phone Number</label>
-          <input type="tel" id="phone" name="phone" required onChange={handleChange} />
+          <label htmlFor="phone" style={{ color: inputValidity.phone ? 'inherit' : 'red' }}>
+            Phone Number
+          </label>
+          <input
+            type="tel"
+            id="phone"
+            name="phone"
+            value={formData.phone}
+            onChange={handleChange}
+            className={!inputValidity.phone ? 'invalidInput' : ''}
+          />
           {warningMessage.phone && <div style={{ color: 'red' }}>{warningMessage.phone}</div>}
         </div>
 
-
+        {/* Password */}
         <div className="formGroup">
-          <label htmlFor="password" style={{ color: inputValidity.password ? 'black' : 'red' }}>Password</label>
+          <label htmlFor="password" style={{ color: inputValidity.password ? 'inherit' : 'red' }}>
+            Password
+          </label>
           <input
             type="password"
             id="password"
             name="password"
-            required
+            value={formData.password}
             onChange={handleChange}
-            className={inputValidity.password ? '' : 'invalidInput'}
+            className={!inputValidity.password ? 'invalidInput' : ''}
           />
-          {!inputValidity.password && (
-            <div className="warningContainer">
-              <div className="invalidLabel">{warningMessage.password}</div>
-            </div>
-          )}
+          {warningMessage.password && <div style={{ color: 'red' }}>{warningMessage.password}</div>}
         </div>
-        <button type="submit" disabled={usernameAvailable !== true || checkingUsername}>Sign Up</button>
+
+        <button type="submit">Sign Up</button>
       </form>
       <Link to="/login">Already have an account? Login</Link>
     </div>

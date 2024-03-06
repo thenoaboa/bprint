@@ -63,14 +63,26 @@ const SignUp = () => {
     }
 
     if (name === 'username'){
-      //check username;
+      // Check if username is empty or not according to the new requirements
+      const isValidUsername = /^[a-zA-Z0-9_$]+$/.test(value); // Allow letters, numbers, underscores, and dollar signs
+      if (!isValidUsername) {
+        setInputValidity((prev) => ({ ...prev, [name]: false }));
+        setWarningMessage((prev) => ({
+          ...prev,
+          [name]: 'Username can only contain letters, numbers, underscores, and dollar signs. No spaces allowed.',
+        }));
+        return; // No need to proceed with further checks if username is invalid
+      }
+      
+      // Reset username check state to encourage re-validation
       setUsernameAvailable(null);
       
+      // If username has not been checked yet, prompt the user to check its availability
       if (usernameAvailable === null && !isFieldEmpty) {
         setInputValidity((prev) => ({ ...prev, [name]: false }));
         setWarningMessage((prev) => ({
           ...prev,
-          [name]: 'Click button to check availability.',
+          [name]: 'Click button to verify availability.',
         }));
       }
     }
@@ -125,25 +137,31 @@ const SignUp = () => {
         username: data.available ? '' : 'Username is taken',
       }));
       setCheckingUsername(false);
+      return data.available; // Return the availability status
     } catch (error) {
       console.error('Error checking username availability:', error);
       setCheckingUsername(false);
       setUsernameAvailable(false);
-      // In case of an error, consider showing a generic error message
       setWarningMessage((prev) => ({ ...prev, username: 'Error checking username. Try again.' }));
+      return false; // Assume unavailable on error
     }
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // Add a check here to automatically verify username availability if not already done
+    // Initialize a variable to track form validity
+    let formIsValid = true;
+
+    let usernameIsAvailable = usernameAvailable;
+    // Only check username availability if it's not already done
     if (formData.username && usernameAvailable === null) {
-      await checkUsernameAvailability();
+      usernameIsAvailable = await checkUsernameAvailability();
+
     }
 
-    let formIsValid = true;
-    let newWarningMessages = {};
+    
+    let newWarningMessages = { ...warningMessage }; //what does this do
 
     // Check each field for validity and update states accordingly
     Object.keys(formData).forEach(key => {
@@ -153,19 +171,19 @@ const SignUp = () => {
         setInputValidity(prev => ({ ...prev, [key]: false }));
       }
     });
-
-    if (usernameAvailable === false) {
+    console.log(usernameIsAvailable)
+    if (!usernameIsAvailable) {
       formIsValid = false;
       newWarningMessages['username'] = 'Username is taken';
       setInputValidity(prev => ({ ...prev, username: false }));
-      //whats weird about username is that when the submit button is click and i have typed something i know is in the database into the field it then shows red label, red field, but no warning message. how do we get warning message?
     }
 
     setWarningMessage(newWarningMessages);
 
-    if (!formIsValid) {
-      return; // Prevent form submission if validation fails
-    }
+    //if anything is in warningMessage, setWarningMessage then formisvalid = false
+    //else if they equal '' meaning they equal nothing then do nothing.
+    
+    if (!formIsValid) return; // Stop if form is invalid
     
     setCheckingUsername(true);
   

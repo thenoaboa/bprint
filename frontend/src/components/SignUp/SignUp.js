@@ -125,6 +125,23 @@ const SignUp = () => {
   };
 
   const checkUsernameAvailability = async () => {
+    // Define the regex pattern for allowed username characters
+    const usernamePattern = /^[a-zA-Z0-9_$]+$/; // Adjust pattern as needed
+
+    // Check if the username matches the allowed pattern
+    if (!usernamePattern.test(formData.username)) {
+      // If the username contains incorrect characters, update state accordingly
+      setUsernameAvailable(false); // Indicates username is not available because it's invalid
+      setInputValidity((prev) => ({ ...prev, username: false }));
+      setWarningMessage((prev) => ({
+        ...prev,
+        username: 'Username can only contain letters, numbers, underscores, and dollar signs. No spaces allowed.',
+      }));
+      setCheckingUsername(false);
+      return false; // No need to check the database
+    }
+
+    // Proceed with checking username availability against the database
     setCheckingUsername(true);
     try {
       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/check-username?username=${formData.username}`);
@@ -149,21 +166,29 @@ const SignUp = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-    // Initialize a variable to track form validity
     let formIsValid = true;
+    let newWarningMessages = {...warningMessage}; // Start with current warning messages
 
-    let usernameIsAvailable = usernameAvailable;
-    // Only check username availability if it's not already done
-    if (formData.username && usernameAvailable === null) {
-      usernameIsAvailable = await checkUsernameAvailability();
-
+    // First, ensure username meets all criteria before checking its availability
+    if (formData.username) {
+      const isValidUsername = /^[a-zA-Z0-9_$]+$/.test(formData.username);
+      if (!isValidUsername) {
+        formIsValid = false;
+        newWarningMessages['username'] = 'Username can only contain letters, numbers, underscores, and dollar signs. No spaces allowed.';
+        setInputValidity(prev => ({ ...prev, username: false }));
+      } else if (usernameAvailable === null) {
+        // If username hasn't been checked and is valid, check its availability
+        await checkUsernameAvailability();
+        // Re-evaluate form validity based on the updated usernameAvailable state
+        if (!usernameAvailable) {
+              formIsValid = false;
+          newWarningMessages['username'] = 'Username is taken';
+          setInputValidity(prev => ({ ...prev, username: false }));
+        }
+      }
     }
 
-    
-    let newWarningMessages = { ...warningMessage }; //what does this do
-
-    // Check each field for validity and update states accordingly
+    // Check for empty fields and invalid states in other fields
     Object.keys(formData).forEach(key => {
       if (!formData[key].trim()) {
         formIsValid = false;
@@ -171,21 +196,14 @@ const SignUp = () => {
         setInputValidity(prev => ({ ...prev, [key]: false }));
       }
     });
-    console.log(usernameIsAvailable)
-    if (!usernameIsAvailable) {
-      formIsValid = false;
-      newWarningMessages['username'] = 'Username is taken';
-      setInputValidity(prev => ({ ...prev, username: false }));
-    }
 
+    // Update warning messages based on final checks
     setWarningMessage(newWarningMessages);
 
-    //if anything is in warningMessage, setWarningMessage then formisvalid = false
-    //else if they equal '' meaning they equal nothing then do nothing.
-    
-    if (!formIsValid) return; // Stop if form is invalid
-    
-    setCheckingUsername(true);
+    if (!formIsValid) {
+      // If form is invalid, stop processing and don't submit
+      return;
+    }
   
     try {
       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/register`, {

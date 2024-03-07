@@ -1,67 +1,67 @@
 body, .homeContainer {
-    min-height: 100vh; /* This makes sure that the body or container takes up at least the height of the viewport */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+  min-height: 100vh; /* This makes sure that the body or container takes up at least the height of the viewport */
+  display: flex;
+  justify-content: center;
+  align-items: center;  
+}
   
-  .homeContainer {
-    flex-direction: column;
-  }
-  .hamburgerButton {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    width: 30px;
-    height: 25px;
-    background-color: #007bff; /* This sets the button background to blue */
-    border: none;
-    cursor: pointer;
-    padding: 5px; /* Add padding to make the button larger and more touch-friendly */
-    z-index: 10;
-    position: fixed; /* Fixed positioning to place it relative to the viewport */
-    top: 10px; /* Distance from the top of the viewport */
-    left: 10px; /* Distance from the left of the viewport */
-    border-radius: 5px; /* Optional: Adds rounded corners to the button */  
-  }
+.homeContainer {
+  flex-direction: column;
+}
+.hamburgerButton {
+  display: flex;
+  justify-content: center; /* Centers content vertically */
+  align-items: center; /* Centers content horizontally */
+  width: 30px;
+  height: 25px;
+  background-color: #007bff; /* Sets the button background to blue */
+  border: none;
+  cursor: pointer;
+  padding: 5px; /* Adds padding to make the button larger and more touch-friendly */
+  z-index: 10;
+  position: fixed; /* Fixed positioning to place it relative to the viewport */
+  top: 10px; /* Distance from the top of the viewport */
+  left: 10px; /* Distance from the left of the viewport */
+  border-radius: 5px; /* Optional: Adds rounded corners to the button */
+}
+
+.navigationPanel {
+  position: fixed; /* Changed from absolute to fixed to make it consistent with the hamburger button */
+  top: 60px;
+  left: 20px;
+  background: white;
+  border-radius: 8px; /* Adds rounded corners */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Adds a subtle shadow for depth */
+  padding: 15px;
+  width: 200px; /* Sets a specific width */
+  z-index: 1000; /* Ensures it's above other content */
+}
+ 
+.navigationPanel a {
+  display: block; /* Makes each link fill the container */
+  color: #007bff; /* Link color */
+  padding: 10px 15px; /* Adds padding for touch friendliness */
+  margin: 5px 0; /* Adds space between links */
+  border-radius: 4px; /* Rounded corners for the links */
+  text-decoration: none; /* Removes underline */
+  transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+}
   
-  .navigationPanel {
-    position: fixed; /* Changed from absolute to fixed to make it consistent with the hamburger button */
-    top: 60px;
-    left: 20px;
-    background: white;
-    border-radius: 8px; /* Adds rounded corners */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Adds a subtle shadow for depth */
-    padding: 15px;
-    width: 200px; /* Sets a specific width */
-    z-index: 1000; /* Ensures it's above other content */
-  }
+.navigationPanel a:hover {
+  background-color: #f0f0f0; /* Light background on hover */
+}
   
-  .navigationPanel a {
-    display: block; /* Makes each link fill the container */
-    color: #007bff; /* Link color */
-    padding: 10px 15px; /* Adds padding for touch friendliness */
-    margin: 5px 0; /* Adds space between links */
-    border-radius: 4px; /* Rounded corners for the links */
-    text-decoration: none; /* Removes underline */
-    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
-  }
-  
-  .navigationPanel a:hover {
-    background-color: #f0f0f0; /* Light background on hover */
-  }
-  
-  .centerButtons {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .centerButtons button {
-    margin: 10px;
-  }
+.centerButtons {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.centerButtons button {
+  margin: 10px;
+}
   

@@ -108,6 +108,7 @@ function Login() {
                         name="email"
                         value={email}
                         onChange={handleChange}
+                        className={!inputValidity.email ? 'invalidInput' : ''}
                     />
                     {warningMessage.email && <div style={{ color: 'red' }}>{warningMessage.email}</div>}
                 </div>
@@ -119,10 +120,10 @@ function Login() {
                         name="password"
                         value={password}
                         onChange={handleChange}
+                        className={!inputValidity.password ? 'invalidInput' : ''}
                     />
                     {warningMessage.password && <div style={{ color: 'red' }}>{warningMessage.password}</div>}
                 </div>
-                
                 <button type="submit" className="btn" disabled={!formValid}>Login</button>
             </form>
             <Link to="/signup">Don't have an account? Sign Up</Link>

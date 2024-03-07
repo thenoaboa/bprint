@@ -59,6 +59,9 @@ Bprint
 │   │   │   │   ├── IB_Icon.png
 │   │   │   │   ├── Login.css
 │   │   │   │   └── Login.js
+│   │   │   ├── Profile\
+│   │   │   │   ├── Profile.css
+│   │   │   │   └── Profile.js
 │   │   │   ├── ProjectsPage\
 │   │   │   │   ├── ProjectsPage.css
 │   │   │   │   └── ProjectsPage.js

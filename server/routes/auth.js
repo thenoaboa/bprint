@@ -89,10 +89,13 @@ router.post('/register', async (req, res) => {
   }
 });
 
-async function checkIfExists(filter) {
+async function checkIfExists(filter, type=false) {
   const apiResponse = await fetch(`${process.env.MONGODB_DATA_API_URL}/action/findOne`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'api-key': process.env.MONGODB_DATA_API_KEY },
+    headers: { 
+      'Content-Type': 'application/json', 
+      'api-key': process.env.MONGODB_DATA_API_KEY 
+    },
     body: JSON.stringify({
       dataSource: process.env.MONGODB_DATA_SOURCE,
       database: process.env.MONGODB_DATABASE,
@@ -101,33 +104,37 @@ async function checkIfExists(filter) {
     }),
   });
   const data = await apiResponse.json();
-  return !!data.document; // Return true if document exists, false otherwise
+  if (type === false) { // For use cases like registration
+    return !!data.document; // Return true if document exists, false otherwise
+  } else { // For use cases like login
+    return data.document ? data.document : null; // Return the document if it exists, null otherwise
+  }
 }
 
 router.post('/login', async (req, res) => {
   console.log("Attempting to Login a user", req.body);
-    try {
-      // Find the user by email
-      const user = await User.findOne({ email: req.body.email });
-      if (!user) {
-        return res.status(400).send('User not found');
-      }
-  
-      // Check if the password is correct
-      const isMatch = await bcrypt.compare(req.body.password, user.password);
-      if (!isMatch) {
-        return res.status(400).send('Invalid credentials');
-      }
-  
-      // Generate a token
-      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-  
-      res.status(200).json({ token });
-    } catch (error) {
-      console.error("Error logging in user:", error);
-      res.status(500).send('Error logging in user');
+  try {
+    // Use checkIfExists to find the user by email
+    const user = await checkIfExists({ email: req.body.email }, true);
+    if (!user) {
+      return res.status(400).send('User not found');
     }
-  });
+
+    // Check if the password is correct
+    const isMatch = await bcrypt.compare(req.body.password, user.password);
+    if (!isMatch) {
+      return res.status(400).send('Invalid credentials');
+    }
+
+    // Generate a token
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+    res.status(200).json({ token });
+  } catch (error) {
+    console.error("Error logging in user:", error);
+    res.status(500).send('Error logging in user');
+  }
+});
 
   
 module.exports = router;

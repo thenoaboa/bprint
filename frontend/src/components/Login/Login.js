@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate instead of useHistory
+import { Link, useNavigate } from 'react-router-dom';
 import './Login.css';
 
 function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const navigate = useNavigate(); // Use useNavigate hook for navigation
+    const navigate = useNavigate();
 
     const handleSubmit = async (event) => {
-        console.log('Login Button Clicked');
         event.preventDefault();
-        const loginUrl = 'https://vigilant-space-chainsaw-ppwpq44r5pj365xw-5000.app.github.dev/api/auth/login';
+        // Use environment variable for backend URL
+        const loginUrl = `${process.env.REACT_APP_BACKEND_URL}/api/auth/login`;
 
         try {
             const response = await fetch(loginUrl, {
@@ -26,7 +26,7 @@ function Login() {
             if (response.ok) {
                 console.log('Login successful', data);
                 localStorage.setItem('token', data.token);
-                navigate('/dashboard'); // Use navigate function to redirect
+                navigate('/dashboard');
             } else {
                 throw new Error(data.message || 'An error occurred during login.');
             }

@@ -59,6 +59,12 @@ button {
 button:hover {
     background-color: #0056b3;
 }
+
+.button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+    color: #666666;
+  }
   
 .signUpPage a {
     display: block;

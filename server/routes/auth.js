@@ -117,24 +117,29 @@ router.post('/login', async (req, res) => {
     // Use checkIfExists to find the user by email
     const user = await checkIfExists({ email: req.body.email }, true);
     if (!user) {
-      return res.status(400).send('User not found');
+      // Use res.json to send a JSON response
+      return res.status(400).json({ message: 'User not found' });
     }
 
     // Check if the password is correct
     const isMatch = await bcrypt.compare(req.body.password, user.password);
     if (!isMatch) {
-      return res.status(400).send('Invalid credentials');
+      // Use res.json to send a JSON response
+      return res.status(400).json({ message: 'Invalid credentials' });
     }
 
     // Generate a token
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
+    // Send the token in a JSON response
     res.status(200).json({ token });
   } catch (error) {
     console.error("Error logging in user:", error);
-    res.status(500).send('Error logging in user');
+    // Use res.json to send a JSON response even for server errors
+    res.status(500).json({ message: 'Error logging in user' });
   }
 });
+
 
   
 module.exports = router;

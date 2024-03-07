@@ -1,0 +1,43 @@
+.profileContainer {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+  
+.profileInfo {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+  
+.profilePicContainer {
+    margin-right: 20px;
+}
+  
+.profilePicContainer img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+  
+.userInfo p {
+    margin: 5px 0;
+}
+  
+.changePasswordBtn {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+  
+.changePasswordBtn:hover {
+    background-color: #0056b3;
+}  

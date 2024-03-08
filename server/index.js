@@ -2,6 +2,7 @@ require('dotenv').config(); // Load environment variables from .env file
 const express = require('express');
 const cors = require('cors'); // Import cors
 const authRoutes = require('./routes/auth');
+const userRoutes = require('./routes/userRoutes');
 const authenticate = require('./middleware/authenticate');
 const { MongoClient } = require('mongodb');
 const uri = process.env.DB_URI; // Ensure this is correctly loaded from your .env file
@@ -14,6 +15,7 @@ app.use(cors());
 
 app.use(express.json()); // Middleware for parsing JSON bodies
 app.use('/api/auth', authRoutes); // Use authentication routes
+app.use('/api/user', userRoutes);
 
 const client = new MongoClient(uri);
 

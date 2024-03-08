@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { jwtDecode as jwt_decode } from 'jwt-decode'; // Assuming jwt-decode is used for decoding JWT tokens
 import './Profile.css';
+import { logout } from '../utils';
 
 const Profile = () => {
     const [userData, setUserData] = useState({
@@ -17,33 +18,37 @@ const Profile = () => {
         const fetchUserData = async () => {
             const token = localStorage.getItem('token');
             if (token) {
-            const decoded = jwt_decode(token);
-            const userId = decoded.id; // Assuming the decoded token contains a user ID
-    
-            try {
-                const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/user/${userId}`, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json',
-                    },
-                });
-                if (response.ok) {
-                    const data = await response.json();
-                    setUserData(data); // Assuming the API response matches the userData state structure
-                } else {
-                    console.error('Failed to fetch user data');
-                    // Handle failure appropriately
+                const decoded = jwt_decode(token);
+                const userId = decoded.id;
+        
+                try {
+                    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/user/${userId}`, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json',
+                        },
+                    });
+                    if (response.ok) {
+                        const data = await response.json();
+                        console.log("Fetched user data: ", data);
+                        //setUserData(data); // Assuming the API response matches the userData state structure
+                    } else {
+                        console.error('Failed to fetch user data', await response.text());
+                    }
+                } catch (error) {
+                    console.error('Error fetching user data:', error);
+                    // Handle error appropriately
                 }
-            } catch (error) {
-                console.error('Error fetching user data:', error);
-                // Handle error appropriately
-            }
             }
         };
   
       fetchUserData();
     }, []);
+
+    const handleLogout = () => {
+        logout(); // Call logout function which clears the token and redirects
+    };
   
     const handleProfilePicChange = (e) => {
         if (e.target.files && e.target.files[0]) {
@@ -78,6 +83,7 @@ const Profile = () => {
                 </div>
             </div>
             <button className="changePasswordBtn">Change Password</button>
+            <button onClick={handleLogout} className="logoutBtn">Logout</button>
         </div>
     );
 };

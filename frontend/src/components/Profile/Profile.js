@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { jwtDecode as jwt_decode } from 'jwt-decode'; // Assuming jwt-decode is used for decoding JWT tokens
 import './Profile.css';
-import { logout } from '../utils';
+import { logout } from '../../utils';
 
 const Profile = () => {
     const [userData, setUserData] = useState({

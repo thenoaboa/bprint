@@ -20,29 +20,28 @@ const Profile = () => {
             if (token) {
                 const decoded = jwt_decode(token);
                 const userId = decoded.id;
-        
+                console.log("Decoded TOKEN: ", decoded)
                 try {
+                    console.log("TOKEN Before GET request: ", token)
                     const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/user/${userId}`, {
                         method: 'GET',
                         headers: {
-                            'Authorization': `Bearer ${token}`,
+                            'Authorization': `Bearer ${token}`, // Include the token in the Authorization header
                             'Content-Type': 'application/json',
                         },
                     });
                     if (response.ok) {
                         const data = await response.json();
                         console.log("Fetched user data: ", data);
-                        //setUserData(data); // Assuming the API response matches the userData state structure
+                        setUserData(data);
                     } else {
                         console.error('Failed to fetch user data', await response.text());
                     }
                 } catch (error) {
                     console.error('Error fetching user data:', error);
-                    // Handle error appropriately
                 }
             }
         };
-  
       fetchUserData();
     }, []);
 

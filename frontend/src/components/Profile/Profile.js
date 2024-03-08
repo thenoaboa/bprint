@@ -68,7 +68,6 @@ const Profile = () => {
                     <Link to="/projects">Saved Projects</Link>
                 </div>
             )}
-            <h2>User Profile</h2>
             <div className="profileInfo">
                 <div className="profilePicContainer">
                     <img src={profilePic || "default_profile_pic.png"} alt="Profile" />

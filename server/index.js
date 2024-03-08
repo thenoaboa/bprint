@@ -1,11 +1,10 @@
 require('dotenv').config(); // Load environment variables from .env file
 const express = require('express');
 const cors = require('cors'); // Import cors
+const mongoose = require('mongoose');
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/userRoutes');
 const authenticate = require('./middleware/authenticate');
-const { MongoClient } = require('mongodb');
-const uri = process.env.DB_URI; // Ensure this is correctly loaded from your .env file
 
 const app = express(); // Define the app with express()
 
@@ -17,21 +16,16 @@ app.use(express.json()); // Middleware for parsing JSON bodies
 app.use('/api/auth', authRoutes); // Use authentication routes
 app.use('/api/user', userRoutes);
 
-const client = new MongoClient(uri);
-
-// Initialize MongoDB connection
-async function initializeDbConnection() {
-    try {
-        await client.connect();
-        console.log("Connected successfully to MongoDB");
-        // Make the database connection available globally
-        app.locals.db = client.db();
-    } catch (err) {
-        console.error("Failed to connect to MongoDB", err);
-        process.exit(1); // Exit the process if unable to connect
-    }
-}
-
+// Initialize MongoDB connection using Mongoose
+mongoose.connect(process.env.DB_URI, { 
+    useNewUrlParser: true, 
+    useUnifiedTopology: true, 
+    dbName: process.env.MONGODB_DATABASE
+}).then(() => {
+    console.log('MongoDB connected successfully to blueprint_db');
+}).catch(err => {
+    console.error('MongoDB connection error:', err);
+});
 // Example of a protected route
 app.get('/api/protected', authenticate, (req, res) => {
     res.send('Access granted to protected content');
@@ -41,8 +35,6 @@ app.get('/', (req, res) => {
     res.send('Welcome to the API');
 });
 
-// Only one app.listen() call is necessary
-initializeDbConnection().then(() => {
-    const PORT = process.env.PORT || 5000; // Use 5000 if process.env.PORT is not defined
-    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-});
+// Start the server
+const PORT = process.env.PORT || 5000; // Use 5000 if process.env.PORT is not defined
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

@@ -3,7 +3,6 @@ const User = require('../models/User'); // Adjust path as needed
 const authenticate = require('../middleware/authenticate'); // Middleware to verify JWT
 
 router.get('/:userId', authenticate, async (req, res) => {
-    console.log(req.header('Authorization'));
     try {
         const user = await User.findById(req.params.userId);
         if (!user) {

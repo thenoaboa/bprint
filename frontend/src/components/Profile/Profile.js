@@ -6,7 +6,7 @@ import { logout } from '../../utils';
 
 const Profile = () => {
     const [userData, setUserData] = useState({
-        name: '',
+        fullName: '',
         username: '',
         email: '',
         phone: '',
@@ -75,7 +75,7 @@ const Profile = () => {
                     <input type="file" onChange={handleProfilePicChange} />
                 </div>
                 <div className="userInfo">
-                    <p><strong>Name:</strong> {userData.name}</p>
+                    <p><strong>Name:</strong> {userData.fullName}</p>
                     <p><strong>Username:</strong> {userData.username}</p>
                     <p><strong>Email:</strong> {userData.email}</p>
                     <p><strong>Phone:</strong> {userData.phone}</p>

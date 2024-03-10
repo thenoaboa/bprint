@@ -17,4 +17,20 @@ router.get('/:userId', authenticate, async (req, res) => {
     }
 });
 
+router.patch('/update/:userId', authenticate, async (req, res) => {
+    const { userId } = req.params;
+    const { profilePicUrl } = req.body; // For this example, we're only updating the profile picture URL
+
+    try {
+        const user = await User.findByIdAndUpdate(userId, { $set: { profilePicUrl } }, { new: true });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.json({ message: 'Profile updated successfully', user });
+    } catch (error) {
+        console.error('Error updating user profile:', error);
+        res.status(500).json({ message: 'Error updating user profile' });
+    }
+});
+
 module.exports = router;

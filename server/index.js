@@ -5,6 +5,7 @@ const cors = require('cors'); // Import cors
 const mongoose = require('mongoose');
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/userRoutes');
+const imageRoutes = require('./routes/imageRoutes');
 const authenticate = require('./middleware/authenticate');
 
 const app = express(); // Define the app with express()
@@ -16,6 +17,7 @@ app.use(cors());
 app.use(express.json()); // Middleware for parsing JSON bodies
 app.use('/api/auth', authRoutes); // Use authentication routes
 app.use('/api/user', userRoutes);
+app.use('/api/image', imageRoutes);
 
 // Initialize MongoDB connection using Mongoose
 mongoose.connect(process.env.DB_URI, { 

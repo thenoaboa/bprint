@@ -57,12 +57,14 @@ const Profile = () => {
         if (e.target.files && e.target.files[0]) {
             const file = e.target.files[0];
             try {
-                const imageUrl = await uploadImage(file, 'Profile');
-                setProfilePic(imageUrl);
-
+                // Retrieve token and decode to get userId
                 const token = localStorage.getItem('token');
                 const decoded = jwt_decode(token);
                 const userId = decoded.id;
+
+                // Pass the file, folder name, and userId to uploadImage
+                const imageUrl = await uploadImage(file, 'Profile', userId); // Added userId here
+                setProfilePic(imageUrl);
 
                 await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/user/update/${userId}`, {
                     method: 'PATCH',

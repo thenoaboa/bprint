@@ -1,7 +1,8 @@
-const uploadImage = async (file, folderName) => {
+const uploadImage = async (file, folderName, userId) => {
   const formData = new FormData();
   formData.append('image', file);
   formData.append('folderName', folderName);
+  formData.append('userId', userId);
   
   const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/image/upload`, {
     method: 'POST',

@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
   phone: { type: String, required: true }, 
   profilePicUrl: { type: String, required: false }, // Optional, contains the URL to the user's profile picture
-  // Add any other fields as needed
+  profilePicId: { type: String, required: false }, // Public ID of the profile picture in Cloudinary
 });
 
 module.exports = mongoose.model('User', userSchema);

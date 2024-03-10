@@ -8,7 +8,7 @@
     flex-direction: column; /* Make contents stack vertically */
     align-items: center; /* Align items in the center */
     box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Optional: Adds a subtle shadow for depth */
-}
+} 
 
 .profilePicContainer {
     position: relative; /* Establishes a positioning context for absolute positioning inside */

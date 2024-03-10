@@ -69,6 +69,8 @@ Bprint
 │   │   │   │   ├── IB_Icon.png
 │   │   │   │   ├── SignUp.css
 │   │   │   │   └── SignUp.js
+│   │   ├── services\
+│   │   │   └── imageService.js #new
 │   │   ├── App.css
 │   │   ├── App.js
 │   │   ├── App.test.js
@@ -91,6 +93,7 @@ Bprint
 │   │   └── Alot of folders...
 │   ├── routes\
 │   │   └── auth.js
+│   │   └── userRoutes.js #new
 │   ├── .env
 │   ├── .gitignore
 │   ├── index.js

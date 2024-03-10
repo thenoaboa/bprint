@@ -1,4 +1,5 @@
 require('dotenv').config(); // Load environment variables from .env file
+const cloudinary = require('cloudinary').v2;
 const express = require('express');
 const cors = require('cors'); // Import cors
 const mongoose = require('mongoose');
@@ -26,6 +27,13 @@ mongoose.connect(process.env.DB_URI, {
 }).catch(err => {
     console.error('MongoDB connection error:', err);
 });
+
+cloudinary.config({ 
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
+    api_key: process.env.CLOUDINARY_API_KEY, 
+    api_secret: process.env.CLOUDINARY_API_SECRET 
+});
+
 // Example of a protected route
 app.get('/api/protected', authenticate, (req, res) => {
     res.send('Access granted to protected content');

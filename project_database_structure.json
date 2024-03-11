@@ -1,0 +1,41 @@
+{
+    "user_id": "random_string_numbers",
+    "project_1": {
+        "Name": "Blueprint Name",
+        "BP_img": "img_url", // that we get returned from uploadImage() imageService.js, cloudinary blueprint url
+        "project_buttons": {
+            "button_1": {
+                "number": "1",
+                "name": "",
+                "x": 123.456, //(x_cord of the button when dragged and dropped on image)
+                "y": 123.456, //(y_cord of the button when dragged and dropped on image)
+                "button_info": {
+                    // This is what shows when the user clicks on the button. 
+                    // But this section is created when person creates the button.
+                    // we have 3 different types of rows a person and put down:
+                    // Text, Image, Link.
+                    // text could be describing the item
+                    // image is the link of the image so they can see it, 
+                    // link could be whatever link they want, articles or even 3d model links.
+                    "row_1": {
+                        "type": "text",
+                        "name": "Torque Spec", //whatever the user put down as the name of this section, could be anything
+                        "description": "24ft pounds" //also whatever the user put down
+                    },
+                    "row_2": {
+                        "type": "image",
+                        "name": "M4 Screw", //name of the image
+                        "link": "img_url" //cloudinary part url
+                    },
+                    "row_3": {
+                        "type": "link",
+                        "name": "3d Model", //name of the link
+                        "link": "url" //github link, article, downloadable 3d model link. anything
+                    },
+                    //you can have as many rows as possible.
+                }
+            },
+        }
+    },
+
+}

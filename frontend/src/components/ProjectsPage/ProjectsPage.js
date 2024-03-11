@@ -12,11 +12,10 @@ function ProjectsPage() {
     { name: "Project 6" },
   ]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [isPanelOpen, setIsPanelOpen] = useState(false); // State for toggling the navigation panel
+  const [isPanelOpen, setIsPanelOpen] = useState(false);
   
 
   useEffect(() => {
-    // Function to fetch projects from your backend
     const fetchYourProjects = async () => {
       try {
         const response = await fetch('your-api-endpoint/projects');
@@ -24,14 +23,12 @@ function ProjectsPage() {
         setProjects(data);
       } catch (error) {
         console.error("Error fetching projects:", error);
-        // Handle error appropriately
       }
     };
   
     fetchYourProjects();
   }, []);
 
-  // Filter projects based on search term
   const filteredProjects = projects.filter(project =>
     project.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -59,7 +56,9 @@ function ProjectsPage() {
           {filteredProjects.map((project, index) => (
             <div key={index} className="projectItem">
               <span className="projectName">{project.name}</span>
-              <button className="downloadButton">Download</button>
+              <button className="projectButton">View</button>
+              <button className="projectButton">Edit</button>
+              <button className="projectButton">Download</button>
             </div>
           ))}
         </div>

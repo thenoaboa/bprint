@@ -1,26 +1,32 @@
 .profileContainer {
-    max-width: 300px; /* Adjusted for a narrower card */
+    max-width: 300px;
     margin: 20px auto;
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 8px;
     display: flex;
-    flex-direction: column; /* Make contents stack vertically */
-    align-items: center; /* Align items in the center */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Optional: Adds a subtle shadow for depth */
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
 } 
 
 .profilePicContainer {
-    position: relative; /* Establishes a positioning context for absolute positioning inside */
-    margin-bottom: 20px; /* Space between the image and user info */
+    margin: auto;
+    position: relative;
+    margin-bottom: 20px;
+    width: 150px;
+    height: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .profilePicContainer img {
-    width: 150px; /* Adjusted for a larger profile pic */
+    width: 150px;
     height: 150px;
     border-radius: 50%;
     object-fit: cover;
-    cursor: pointer; /* Changes the cursor to indicate it's clickable */
+    cursor: pointer;
 }
 
 .profilePicContainer:hover::after {
@@ -28,10 +34,10 @@
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    background-color: rgba(0,0,0,0.6); /* Semi-transparent overlay */
+    right: 0;
+    bottom: 0; 
+    border-radius: 50%; 
+    background-color: rgba(0,0,0,0.6);
     color: white;
     display: flex;
     justify-content: center;
@@ -41,7 +47,7 @@
 }
 
 .userInfo {
-    text-align: center; /* Center aligns the text */
+    text-align: center;
 }
 
 .userInfo p {
@@ -49,7 +55,7 @@
 }
 
 .logoutBtn {
-    margin-top: 20px; /* Space between user info and logout button */
+    margin-top: 20px;
     padding: 10px 20px;
     border: none;
     border-radius: 4px;
@@ -59,5 +65,5 @@
 }
 
 .logoutBtn:hover {
-    background-color: #0056b3; /* Darker shade on hover for feedback */
+    background-color: #0056b3;
 }

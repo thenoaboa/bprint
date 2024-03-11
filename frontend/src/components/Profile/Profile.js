@@ -52,6 +52,10 @@ const Profile = () => {
     const handleLogout = () => {
         logout(); // Call logout function which clears the token and redirects
     };
+
+    const handleProfilePicClick = () => {
+        document.getElementById("fileInput").click();
+    };
   
     const handleProfilePicChange = async (e) => {
         if (e.target.files && e.target.files[0]) {
@@ -95,9 +99,9 @@ const Profile = () => {
                 </div>
             )}
             <div className="profileInfo">
-                <div className="profilePicContainer">
+                <div className="profilePicContainer" onClick={handleProfilePicClick}>
                     <img src={profilePic || "default_profile_pic.png"} alt="Profile" />
-                    <input type="file" onChange={handleProfilePicChange} />
+                    <input type="file" id="fileInput" onChange={handleProfilePicChange} style={{ display: 'none' }} />
                 </div>
                 <div className="userInfo">
                     <p><strong>Name:</strong> {userData.fullName}</p>

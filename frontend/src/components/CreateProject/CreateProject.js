@@ -18,11 +18,11 @@ function CreateProject() {
         e.preventDefault();
         const file = imageInputRef.current.files[0];
         if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            setImageFile(e.target.result); 
-        };
-        reader.readAsDataURL(file);
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                setImageFile(e.target.result);
+            };
+            reader.readAsDataURL(file);
         }
         setIsSubmitted(true);
     };

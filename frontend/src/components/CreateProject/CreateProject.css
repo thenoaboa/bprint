@@ -99,19 +99,13 @@
 }
 
 .imageContainer {
-    position: absolute;
-    top: 80px; /* Adjust based on your title container height */
-    bottom: 0; /* Ensure it fills the space below the title container */
     width: 100%;
-    overflow: auto; /* Scroll bars will appear when content is larger than container */
-    z-index: 10; /* Ensure it's above the background but below interactive UI elements */
+    overflow: hidden; /* Only for debugging */
 }
 
 .projectImage {
-    max-width: none; /* Allow the image to exceed the 100% width of its container */
-    max-height: none; /* Allow the image height to exceed the container's height */
-    width: auto; /* Width will be adjusted dynamically */
-    height: auto; /* Height will be adjusted dynamically */
+    max-width: 100%;
+    height: auto;
 }
 
 .submitBtn, .cancelBtn{

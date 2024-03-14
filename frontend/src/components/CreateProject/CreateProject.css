@@ -1,125 +1,9 @@
-.createProjectContainer {
-    max-width: 600px;
-    margin: 20px auto;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-  
-.projectForm {
-    display: flex;
-    flex-direction: column;
-}
-  
-.formGroup {
-    margin-bottom: 15px;
-}
-  
-.formGroup label {
-    margin-bottom: 5px;
-    display: block;
-}
-  
-.formGroup input {
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-  
-.submitBtn {
-    padding: 10px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    cursor: pointer;
-    border-radius: 4px;
-}
-.submitBtn:hover {
-    background-color: #0056b3;
-}
-.imageUploadContainer {
-    margin-bottom: 15px;
-}
-/* Style for the Cancel button */
-.cancelBtn {
-    margin-top: 10px;
-    padding: 10px;
-    background-color: #ccc; /* Light gray, distinguish from the Start button */
-    color: #333; /* Darker text for contrast */
-    border: none;
-    cursor: pointer;
-    border-radius: 4px;
-}
-  
-.cancelBtn:hover {
-    background-color: #bbb; /* Slightly darker on hover */
-}
-
-.projectDisplay {
-    position: relative;
-    width: 100%;
-    height: 100vh;
-    padding-top: 10%;
-    text-align: center; /* Center-align content horizontally */
-}
-
-.projectDisplay h2 {
-    display: inline-block; /* Ensure h2 element is inline-block for vertical alignment */
-    vertical-align: middle; /* Align h2 element vertically */
-}
-  
-.editProjectNameInput {
-    display: block; /* Change input field display to block */
-    margin: 0 auto; /* Center the input field horizontally */
-    font-size: 20px; 
-    border: none;
-    border-bottom: 2px solid #007bff; 
-    color: #007bff; 
-    margin-bottom: 10px; 
-}
-
-.editButton, .saveButton {
-    background: none;
-    border: none;
-    color: #007bff; 
-    cursor: pointer;
-    display: inline-block;
-    margin-left: 10px; 
-    font-size: 15px;
-    height: 30px;
-    width: 30px;
-    text-align: center;
-    vertical-align: middle;
-}
-
-.editButton {
-    background-image: url('Edit.png');
-    background-size: contain; /* Adjust background size to fit button */
-}
-
-.editButton:hover, .saveButton:hover {
-    background-color: #bbb;
-}
-
-.projectDisplay h2, .projectDisplay .editButton, .projectDisplay .editProjectNameInput {
-    display: inline-block;
-    vertical-align: middle;
-}
-
-
-
-.projectImage {
-    max-width: 90%;
-    max-height: 70vh;
-    margin: 0 5%;
-}
-
 .navigationPanel button {
     display: block;
     color: #007bff;
     background-color: transparent;
-    padding: 10px; 
-    margin: 5px 0; 
+    padding: 10px;
+    margin: 5px 0;
     border-radius: 4px;
     text-decoration: none;
     text-align: left;
@@ -128,7 +12,129 @@
 }
 
 .navigationPanel button:hover {
-    background-color: #f0f0f0; 
+    background-color: #f0f0f0;
     color: #007bff;
 }
 
+.createProjectContainer {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.projectTitleContainer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0; 
+    display: flex;
+    justify-content: space-between;
+    align-items: center; 
+    background: rgba(255, 255, 255, 0.9);
+    z-index: 100;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 10px 20px;
+}
+
+.projectNameInput {
+    margin-left: 40px;
+    margin-right: 10px;
+    font-size: 18px;
+}
+
+.projectNameText  {
+    margin-left: 40px;
+    margin-right: 20px;
+    background-color: transparent;
+    color: #007bff;
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.projectNameText :hover {
+    background-color: rgba(0, 123, 255, 0.1); /* Slightly darker on hover */
+}
+
+.createInteractiveButtons {
+    width: 40px; /* Equal width and height make it a square */
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px; /* Adjust or remove padding to ensure it stays square */
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.createInteractiveButtons:hover{
+    background-color: #0056b3;
+}
+
+.formGroup {
+    margin-bottom: 15px;
+}
+  
+.formGroup label {
+    display: block;
+    margin-bottom: 5px;
+}
+  
+.formGroup input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.projectDisplay {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.imageContainer {
+    position: absolute;
+    top: 80px; /* Adjust based on your title container height */
+    bottom: 0; /* Ensure it fills the space below the title container */
+    width: 100%;
+    overflow: auto; /* Scroll bars will appear when content is larger than container */
+    z-index: 10; /* Ensure it's above the background but below interactive UI elements */
+}
+
+.projectImage {
+    max-width: none; /* Allow the image to exceed the 100% width of its container */
+    max-height: none; /* Allow the image height to exceed the container's height */
+    width: auto; /* Width will be adjusted dynamically */
+    height: auto; /* Height will be adjusted dynamically */
+}
+
+.submitBtn, .cancelBtn{
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 15px;
+}
+
+.cancelBtn {
+    margin-top: 10px;
+    background-color: #ccc;
+    color: #333;
+}
+.cancelBtn:hover {
+    background-color: #bbb;
+}
+
+.submitBtn {
+    background-color: #007bff;
+    color: white;
+}
+.submitBtn:hover, .editButton:hover{
+    background-color: #0056b3;
+}

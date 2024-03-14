@@ -10,7 +10,6 @@ function CreateProject() {
     const [editMode, setEditMode] = useState(false); 
     const [tempProjectName, setTempProjectName] = useState('');
     const [zoomLevel, setZoomLevel] = useState(1); // Start at 100% zoom
-    const [position, setPosition] = useState({ x: 0, y: 0 });
     const imageInputRef = useRef(); // Ref for the file input
     const navigate = useNavigate();
 
@@ -52,7 +51,8 @@ function CreateProject() {
     };
 
     const imageStyle = {
-        transform: `scale(${zoomLevel}) translate(${position.x}px, ${position.y}px)`,
+        transform: `scale(${zoomLevel})`,
+        transformOrigin: 'top left',
     };
 
     const createButton = () => {
@@ -72,33 +72,33 @@ function CreateProject() {
         <>
             {!isSubmitted ? (
                 <div className="createProjectContainer">
-                <h1>Create New Project</h1>
-                <form onSubmit={handleSubmit} className="projectForm">
-                    <div className="formGroup">
-                    <label htmlFor="projectName">Project Name:</label>
-                    <input
-                        type="text"
-                        id="projectName"
-                        name="projectName"
-                        value={projectName}
-                        onChange={(e) => setProjectName(e.target.value)}
-                        required
-                    />
-                    </div>
-                    <div className="formGroup imageUploadContainer">
-                    <label htmlFor="projectImage">Project Image:</label>
-                    <input
-                        type="file"
-                        id="projectImage"
-                        name="projectImage"
-                        ref={imageInputRef}
-                        required
-                        accept="image/*"
-                    />
-                    </div>
-                    <button type="submit" className="submitBtn">Start</button>
-                    <button type="button" className="cancelBtn" onClick={GoHome}>Cancel</button>
-                </form>
+                    <h1>Create New Project</h1>
+                    <form onSubmit={handleSubmit} className="projectForm">
+                        <div className="formGroup">
+                            <label htmlFor="projectName">Project Name:</label>
+                            <input
+                                type="text"
+                                id="projectName"
+                                name="projectName"
+                                value={projectName}
+                                onChange={(e) => setProjectName(e.target.value)}
+                                required
+                            />
+                            </div>
+                            <div className="formGroup imageUploadContainer">
+                            <label htmlFor="projectImage">Project Image:</label>
+                            <input
+                                type="file"
+                                id="projectImage"
+                                name="projectImage"
+                                ref={imageInputRef}
+                                required
+                                accept="image/*"
+                            />
+                        </div>
+                        <button type="submit" className="submitBtn">Start</button>
+                        <button type="button" className="cancelBtn" onClick={GoHome}>Cancel</button>
+                    </form>
                 </div>
             ) : (
                 <div className="projectDisplay">
@@ -129,9 +129,13 @@ function CreateProject() {
                         
                         <button onClick={createButton} className="createInteractiveButtons">+</button>
                     </div>
-                <div className="imageContainer">
-                    <img src={imageFile} alt="Project" className="projectImage" style={imageStyle} />
-                </div>
+                    <div className="imageContainer">
+                        <img src={imageFile} alt="Project" className="projectImage" style={imageStyle} />
+                    </div>
+                    <div className="zoomControlContainer">
+                        <button onClick={handleZoomIn} className="zoomInButton">Zoom +</button>
+                        <button onClick={handleZoomOut} className="zoomOutButton">Zoom -</button>
+                    </div>
                 </div>
             )}
         </>

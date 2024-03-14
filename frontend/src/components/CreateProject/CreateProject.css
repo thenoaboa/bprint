@@ -168,6 +168,20 @@
     cursor: pointer;
 }
 
-
+.buttonStyle {
+    width: 50px; /* Circle size */
+    height: 50px; /* Circle size */
+    background-color: #007bff; /* Button color */
+    color: white; /* Text color */
+    border-radius: 50%; /* Circular shape */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 14px; /* Adjust based on your needs */
+    border: 2px solid #0056b3; /* Border to make it stand out */
+    cursor: grab; /* Cursor style when mouse over it */
+    user-select: none; /* Prevent text selection */
+}
 
 

@@ -10,6 +10,7 @@ function CreateProject() {
     const [editMode, setEditMode] = useState(false); 
     const [tempProjectName, setTempProjectName] = useState('');
     const [zoomLevel, setZoomLevel] = useState(1); // Start at 100% zoom
+    const [buttons, setButtons] = useState([]);
     const imageInputRef = useRef(); // Ref for the file input
     const navigate = useNavigate();
 
@@ -56,7 +57,43 @@ function CreateProject() {
     };
 
     const createButton = () => {
-        // do something
+        const newButton = {
+            id: buttons.length, // Simple ID assignment
+            x: 50, // Example position, adjust based on requirements
+            y: 50, // Example position, adjust based on requirements
+            name: `${buttons.length + 1}`
+        };
+        setButtons([...buttons, newButton]);
+    };
+
+    const onDragStart = (e, id) => {
+        const rect = e.target.getBoundingClientRect();
+        const offsetX = e.clientX - rect.left; // X position within the element
+        const offsetY = e.clientY - rect.top;  // Y position within the element
+        e.dataTransfer.setData("offsetX", offsetX);
+        e.dataTransfer.setData("offsetY", offsetY);
+        e.dataTransfer.setData("buttonId", id);
+    };
+
+    const onDrop = (e) => {
+        const offsetX = e.dataTransfer.getData("offsetX");
+        const offsetY = e.dataTransfer.getData("offsetY");
+        const buttonId = e.dataTransfer.getData("buttonId");
+      
+        const rect = e.target.getBoundingClientRect();
+        const x = e.clientX - rect.left - offsetX;
+        const y = e.clientY - rect.top - offsetY;
+      
+        setButtons(buttons.map(button => {
+            if (button.id.toString() === buttonId) {
+                return { ...button, x, y };
+            }
+            return button;
+        }));
+    };
+
+    const onDragOver = (e) => {
+        e.preventDefault(); // Necessary for onDrop to trigger
     };
 
     const handleSaveProject = () => {
@@ -129,8 +166,19 @@ function CreateProject() {
                         
                         <button onClick={createButton} className="createInteractiveButtons">+</button>
                     </div>
-                    <div className="imageContainer">
+                    <div className="imageContainer" onDrop={onDrop} onDragOver={onDragOver}>
                         <img src={imageFile} alt="Project" className="projectImage" style={imageStyle} />
+                        {buttons.map(button => (
+                            <div 
+                                key={button.id} 
+                                draggable 
+                                onDragStart={(e) => onDragStart(e, button.id)}
+                                className="buttonStyle"
+                                style={{ position: 'absolute', left: button.x, top: button.y }}
+                            >
+                                {button.name}
+                            </div>
+                        ))}
                     </div>
                     <div className="zoomControlContainer">
                         <button onClick={handleZoomIn} className="zoomInButton">Zoom +</button>

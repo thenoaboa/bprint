@@ -168,6 +168,11 @@
     cursor: pointer;
 }
 
+.zoomInButton:disabled, .zoomOutButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 .buttonStyle {
     width: 25px; /* Circle size */
     height: 25px; /* Circle size */
@@ -227,6 +232,65 @@
     border-radius: 8px;
 }
 
+.addRow, .closeBtn{
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+.addRow {
+    background-color: #4CAF50; /* Green */
+    color: white;
+}
+
+.deleteBtn {
+    margin-left: 5px;
+    padding: 8px;
+    font-size: 12px;
+    background-color: #f44336; /* Red */
+    color: white;
+}
+
 .closeBtn{
-    
+    background-color: #008CBA; /* Blue */
+    color: white;
+}
+
+.row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+    border-radius: 5px;
+}
+
+.row input, .row select {
+    margin-left: 5px;
+    padding: 5px;
+}
+
+.NameOfRowInput {
+    width: 100px;
+}
+
+.rowController {
+    background-color: white;
+    border: 1px solid #333;
+    color: #333;
+}
+
+.fileSelectButton {
+    width: 100%; /* Match the width of other inputs */
+    border-radius: 4px;
+    background-color: white;
+    cursor: pointer;
+    font-size: 14px;
+    color: #757575;
+    padding: 8px; /* Adjust padding to match other inputs */
+    border: 1px solid #ccc; /* Border to match other inputs */
+}
+
+.fileInputHidden {
+    display: none; /* Ensure the file input is not visible */
 }

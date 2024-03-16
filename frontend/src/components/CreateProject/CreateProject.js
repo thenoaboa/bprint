@@ -12,6 +12,7 @@ function CreateProject() {
     const [zoomLevel, setZoomLevel] = useState(1); // Start at 100% zoom
     const [buttons, setButtons] = useState([]);
     const [editingButtonId, setEditingButtonId] = useState(null); // Tracks which button is being edited
+    const [selectedFileName, setSelectedFileName] = useState('');
     const imageInputRef = useRef(); // Ref for the file input
     const navigate = useNavigate();
 
@@ -60,10 +61,10 @@ function CreateProject() {
     const createButton = () => {
         const newButton = {
             id: buttons.length,
-            x: 100,
-            y: 100,
+            x: 100, y: 100,
             name: `${buttons.length + 1}`,
             isLocked: false, // New property to track if the button is locked
+            rows: [] // New: each button can have multiple rows
         };
         setButtons([...buttons, newButton]);
     };
@@ -130,6 +131,79 @@ function CreateProject() {
             })
         );
     };
+
+    const addRowToButton = (buttonId) => {
+        const newRows = buttons.map(button => {
+            if (button.id === buttonId) {
+                const newRow = {
+                    id: button.rows.length,
+                    name: '',
+                    type: 'text', // Default type
+                    description: '', // Used for text and URL types
+                    // For photo, you'll likely need a separate handling due to file uploads
+                };
+                return { ...button, rows: [...button.rows, newRow] };
+            }
+            return button;
+        });
+        setButtons(newRows);
+    };
+
+    const updateRowData = (buttonId, rowId, newData) => {
+        setButtons(buttons.map(button => {
+            if (button.id === buttonId) {
+                return { 
+                    ...button, 
+                    rows: button.rows.map(row => {
+                        if (row.id === rowId) {
+                            return { ...row, ...newData };
+                        }
+                        return row;
+                    })
+                };
+            }
+            return button;
+        }));
+    };
+
+    const updateRowType = (buttonId, rowId, newType) => {
+        setButtons(buttons.map(button => {
+            if (button.id === buttonId) {
+                return {
+                    ...button,
+                    rows: button.rows.map(row => {
+                        if (row.id === rowId) {
+                            return { ...row, type: newType, description: '', file: null }; // Reset description or file
+                        }
+                        return row;
+                    }),
+                };
+            }
+            return button;
+        }));
+    };
+
+    const handlePhotoChange = (buttonId, rowId, event) => {
+        // Handle file selection logic here
+        const file = event.target.files[0];
+        if (file) {
+            // Update state or perform additional actions with the file
+            setSelectedFileName(file.name);
+            // More logic to handle the photo change...
+        }
+    };
+    
+    const fileInputRef = useRef(null);
+
+    const handleFileButtonClick = () => {
+        fileInputRef.current.click();
+    };
+
+    const deleteButton = (id) => {
+        setButtons(buttons.filter(button => button.id !== id));
+        setEditingButtonId(null); // Close the modal after deletion
+    };
+    
 
     const handleSaveProject = () => {
         // do something
@@ -223,7 +297,7 @@ function CreateProject() {
                         ))}
                         {editingButtonId !== null && (
                             <div className="modal">
-                                <button  className="addRow">Add Row</button>
+                                <button onClick={() => addRowToButton(editingButtonId)} className="addRow">Add Row</button>
                                 <div className="row">
                                     <label>Name: </label>
                                     <input
@@ -231,24 +305,59 @@ function CreateProject() {
                                         value={buttons.find((btn) => btn.id === editingButtonId)?.name || ''}
                                         onChange={(e) => updateButtonName(editingButtonId, e.target.value)}
                                     />
+                                    <button className="deleteBtn" onClick={() => deleteButton(editingButtonId)}>Delete Button</button>
                                 </div>
-                                <div className="row">
-                                    <button className="rowController">⋮</button>
-                                    <input className="rowName"/>   
-                                    <select name="rowType" id="rowType">
-                                        <option value="text">Text</option>
-                                        <option value="url">URL</option>
-                                        <option value="photo">Photo</option>
-                                    </select>
-                                </div>
-                                <button  className="closeBtn" onClick={() => setEditingButtonId(null)}>Close</button>
-                                <button  className="DeleteBtn" >Delete</button>
+                                {buttons.find(btn => btn.id === editingButtonId)?.rows.map((row, index) => (
+                                    <div className="row" key={index}>
+                                        <button className="rowController">⋮</button>
+                                        <input
+                                            className='NameOfRowInput'
+                                            type="text"
+                                            value={row.name}
+                                            onChange={(e) => updateRowData(editingButtonId, row.id, { name: e.target.value })}
+                                        />
+                                        {
+                                            row.type === 'text' || row.type === 'url' ? (
+                                                <input
+                                                    className='DescriptionOfRowInput'
+                                                    type={row.type === 'url' ? 'url' : 'text'}
+                                                    value={row.description}
+                                                    onChange={(e) => updateRowData(editingButtonId, row.id, { description: e.target.value })}
+                                                />
+                                            ) : row.type === 'photo' && (
+                                                <>
+                                                    <button 
+                                                        className="fileSelectButton" 
+                                                        onClick={handleFileButtonClick}>
+                                                        {selectedFileName || 'Select File'}
+                                                    </button>
+                                                    <input
+                                                        ref={fileInputRef}
+                                                        type="file"
+                                                        className="fileInputHidden"
+                                                        onChange={(e) => handlePhotoChange(editingButtonId, row.id, e)}
+                                                        style={{ display: 'none' }}
+                                                    />
+                                                </>
+                                            )
+                                        }
+                                        <select
+                                            value={row.type}
+                                            onChange={(e) => updateRowType(editingButtonId, row.id, e.target.value)}
+                                        >
+                                            <option value="text">Text</option>
+                                            <option value="url">URL</option>
+                                            <option value="photo">Photo</option>
+                                        </select>
+                                    </div>
+                                ))}
+                                <button className="closeBtn" onClick={() => setEditingButtonId(null)}>Close</button>
                             </div>
                         )}
                     </div>
                     <div className="zoomControlContainer">
-                        <button onClick={handleZoomIn} className="zoomInButton">Zoom +</button>
-                        <button onClick={handleZoomOut} className="zoomOutButton">Zoom -</button>
+                        <button onClick={handleZoomIn} className="zoomInButton" disabled>Zoom +</button>
+                        <button onClick={handleZoomOut} className="zoomOutButton" disabled>Zoom -</button>
                     </div>
                 </div>
             )}

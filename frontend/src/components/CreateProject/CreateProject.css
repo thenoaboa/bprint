@@ -169,8 +169,8 @@
 }
 
 .buttonStyle {
-    width: 50px; /* Circle size */
-    height: 50px; /* Circle size */
+    width: 25px; /* Circle size */
+    height: 25px; /* Circle size */
     background-color: #007bff; /* Button color */
     color: white; /* Text color */
     border-radius: 50%; /* Circular shape */
@@ -178,10 +178,55 @@
     justify-content: center;
     align-items: center;
     text-align: center;
-    font-size: 14px; /* Adjust based on your needs */
+    font-size: 10px; /* Adjust based on your needs */
     border: 2px solid #0056b3; /* Border to make it stand out */
     cursor: grab; /* Cursor style when mouse over it */
     user-select: none; /* Prevent text selection */
 }
 
+.removeButton, .lockButton {
+    position: absolute;
+    width: 20px; /* Smaller than main button */
+    height: 20px; /* Smaller than main button */
+    border: none;
+    border-radius: 50%; /* Circle shape */
+    cursor: pointer;
+    color: white;
+    font-size: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
+.removeButton {
+    background-color: red;
+    top: -15px; /* Position above the draggable button */
+    right: -15px; /* Position to the right */
+}
+
+.lockButton {
+    background-color: green;
+    top: -15px; /* Position above the draggable button */
+    left: -15px; /* Position to the left */
+}
+
+/* Style adjustments for when the button is not draggable anymore */
+.buttonStyle.locked {
+    cursor: default;
+}
+
+.modal {
+    position: fixed; /* Or absolute, depending on your layout */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    z-index: 1000; /* Ensure it's above other content */
+    box-shadow: 6px 6px 6px 6px rgba(0,0,0,0.1);
+    border-radius: 8px;
+}
+
+.closeBtn{
+    
+}

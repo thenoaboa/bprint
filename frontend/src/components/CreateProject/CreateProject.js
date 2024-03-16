@@ -11,6 +11,7 @@ function CreateProject() {
     const [tempProjectName, setTempProjectName] = useState('');
     const [zoomLevel, setZoomLevel] = useState(1); // Start at 100% zoom
     const [buttons, setButtons] = useState([]);
+    const [editingButtonId, setEditingButtonId] = useState(null); // Tracks which button is being edited
     const imageInputRef = useRef(); // Ref for the file input
     const navigate = useNavigate();
 
@@ -58,10 +59,11 @@ function CreateProject() {
 
     const createButton = () => {
         const newButton = {
-            id: buttons.length, // Simple ID assignment
-            x: 50, // Example position, adjust based on requirements
-            y: 50, // Example position, adjust based on requirements
-            name: `${buttons.length + 1}`
+            id: buttons.length,
+            x: 100,
+            y: 100,
+            name: `${buttons.length + 1}`,
+            isLocked: false, // New property to track if the button is locked
         };
         setButtons([...buttons, newButton]);
     };
@@ -94,6 +96,39 @@ function CreateProject() {
 
     const onDragOver = (e) => {
         e.preventDefault(); // Necessary for onDrop to trigger
+    };
+
+    const lockButton = (id) => {
+        setButtons(buttons.map(button => {
+            if (button.id === id) {
+                return { ...button, isLocked: true };
+            }
+            return button;
+        }));
+    };
+    
+    const removeButton = (id) => {
+        setButtons(buttons.filter(button => button.id !== id));
+    };
+
+    const handleButtonClick = (id) => {
+        const button = buttons.find(button => button.id === id);
+        if (button && button.isLocked) {
+            // If the button is locked, set it to be edited
+            setEditingButtonId(id);
+            // Here, you can show a modal or an editable input for the button's content
+        }
+    };
+
+    const updateButtonName = (id, newName) => {
+        setButtons(
+            buttons.map((btn) => {
+                if (btn.id === id) {
+                    return { ...btn, name: newName };
+                }
+                return btn;
+            })
+        );
     };
 
     const handleSaveProject = () => {
@@ -169,16 +204,47 @@ function CreateProject() {
                     <div className="imageContainer" onDrop={onDrop} onDragOver={onDragOver}>
                         <img src={imageFile} alt="Project" className="projectImage" style={imageStyle} />
                         {buttons.map(button => (
-                            <div 
-                                key={button.id} 
-                                draggable 
-                                onDragStart={(e) => onDragStart(e, button.id)}
-                                className="buttonStyle"
-                                style={{ position: 'absolute', left: button.x, top: button.y }}
-                            >
-                                {button.name}
+                            <div key={button.id} style={{ position: 'absolute', left: button.x, top: button.y }}>
+                                {!button.isLocked && (
+                                    <>
+                                        <button className="removeButton" onClick={() => removeButton(button.id)}>X</button>
+                                        <button className="lockButton" onClick={() => lockButton(button.id)}>✓</button>
+                                    </>
+                                )}
+                                <div
+                                    className={`buttonStyle ${button.isLocked ? 'locked' : ''}`}
+                                    draggable={!button.isLocked}
+                                    onDragStart={(e) => onDragStart(e, button.id)}
+                                    onClick={() => handleButtonClick(button.id)} // Handle click event
+                                >
+                                    {button.name}
+                                </div>
                             </div>
                         ))}
+                        {editingButtonId !== null && (
+                            <div className="modal">
+                                <button  className="addRow">Add Row</button>
+                                <div className="row">
+                                    <label>Name: </label>
+                                    <input
+                                        type="text"
+                                        value={buttons.find((btn) => btn.id === editingButtonId)?.name || ''}
+                                        onChange={(e) => updateButtonName(editingButtonId, e.target.value)}
+                                    />
+                                </div>
+                                <div className="row">
+                                    <button className="rowController">⋮</button>
+                                    <input className="rowName"/>   
+                                    <select name="rowType" id="rowType">
+                                        <option value="text">Text</option>
+                                        <option value="url">URL</option>
+                                        <option value="photo">Photo</option>
+                                    </select>
+                                </div>
+                                <button  className="closeBtn" onClick={() => setEditingButtonId(null)}>Close</button>
+                                <button  className="DeleteBtn" >Delete</button>
+                            </div>
+                        )}
                     </div>
                     <div className="zoomControlContainer">
                         <button onClick={handleZoomIn} className="zoomInButton">Zoom +</button>

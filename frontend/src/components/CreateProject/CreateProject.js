@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import ReactDOM from 'react-dom';
 import './CreateProject.css';
 
 function CreateProject() {
@@ -12,7 +13,7 @@ function CreateProject() {
     const [zoomLevel, setZoomLevel] = useState(1); // Start at 100% zoom
     const [buttons, setButtons] = useState([]);
     const [editingButtonId, setEditingButtonId] = useState(null); // Tracks which button is being edited
-    const [selectedFileName, setSelectedFileName] = useState('');
+    const [contextMenu, setContextMenu] = useState({ isVisible: false, rowId: null, position: { x: 0, y: 0 } });
     const imageInputRef = useRef(); // Ref for the file input
     const navigate = useNavigate();
 
@@ -61,10 +62,11 @@ function CreateProject() {
     const createButton = () => {
         const newButton = {
             id: buttons.length,
-            x: 100, y: 100,
+            x: 100,
+            y: 100,
             name: `${buttons.length + 1}`,
-            isLocked: false, // New property to track if the button is locked
-            rows: [] // New: each button can have multiple rows
+            isLocked: false,
+            rows: [], // Each row can now have its own set of data, including files
         };
         setButtons([...buttons, newButton]);
     };
@@ -132,6 +134,24 @@ function CreateProject() {
         );
     };
 
+    const increaseButtonSize = (buttonId) => {
+        setButtons(buttons.map(button => {
+            if (button.id === buttonId) {
+                return { ...button, buttonSize: button.buttonSize + 5 }; // Adjust size increment as needed
+            }
+            return button;
+        }));
+    };
+    
+    const decreaseButtonSize = (buttonId) => {
+        setButtons(buttons.map(button => {
+            if (button.id === buttonId) {
+                return { ...button, buttonSize: Math.max(button.buttonSize - 5, 10) }; // Prevent size from becoming too small
+            }
+            return button;
+        }));
+    };
+
     const addRowToButton = (buttonId) => {
         const newRows = buttons.map(button => {
             if (button.id === buttonId) {
@@ -140,7 +160,8 @@ function CreateProject() {
                     name: '',
                     type: 'text', // Default type
                     description: '', // Used for text and URL types
-                    // For photo, you'll likely need a separate handling due to file uploads
+                    fileName: '', // For rows of type 'photo', store the file name here
+                    buttonSize: 25, //css script has it defualt as 25px
                 };
                 return { ...button, rows: [...button.rows, newRow] };
             }
@@ -183,21 +204,49 @@ function CreateProject() {
         }));
     };
 
+    const handleRowControllerClick = (e, rowId) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setContextMenu({
+            isVisible: true,
+            rowId: rowId,
+            position: { x: e.pageX, y: e.pageY }
+        });
+    };
+
+    const removeRow = (rowId) => {
+        const updatedButtons = buttons.map(button => {
+            if (button.id === editingButtonId) {
+                return { ...button, rows: button.rows.filter(row => row.id !== rowId) };
+            }
+            return button;
+        });
+        setButtons(updatedButtons);
+        setContextMenu({ isVisible: false, rowId: null, position: { x: 0, y: 0 } }); // Close the context menu
+    };
+
+
     const handlePhotoChange = (buttonId, rowId, event) => {
-        // Handle file selection logic here
         const file = event.target.files[0];
         if (file) {
-            // Update state or perform additional actions with the file
-            setSelectedFileName(file.name);
-            // More logic to handle the photo change...
+            setButtons(buttons.map(button => {
+                if (button.id === buttonId) {
+                    return {
+                        ...button,
+                        rows: button.rows.map(row => {
+                            if (row.id === rowId && row.type === 'photo') {
+                                return { ...row, fileName: file.name };
+                            }
+                            return row;
+                        }),
+                    };
+                }
+                return button;
+            }));
         }
     };
     
-    const fileInputRef = useRef(null);
-
-    const handleFileButtonClick = () => {
-        fileInputRef.current.click();
-    };
+    const fileInputRef = useRef(null);   
 
     const deleteButton = (id) => {
         setButtons(buttons.filter(button => button.id !== id));
@@ -289,6 +338,7 @@ function CreateProject() {
                                     className={`buttonStyle ${button.isLocked ? 'locked' : ''}`}
                                     draggable={!button.isLocked}
                                     onDragStart={(e) => onDragStart(e, button.id)}
+                                    style={{ width: `${button.buttonSize}px`, height: `${button.buttonSize}px` }}
                                     onClick={() => handleButtonClick(button.id)} // Handle click event
                                 >
                                     {button.name}
@@ -307,11 +357,20 @@ function CreateProject() {
                                     />
                                     <button className="deleteBtn" onClick={() => deleteButton(editingButtonId)}>Delete Button</button>
                                 </div>
+
                                 {buttons.find(btn => btn.id === editingButtonId)?.rows.map((row, index) => (
                                     <div className="row" key={index}>
-                                        <button className="rowController">⋮</button>
+                                        <button className="rowController" onClick={(e) => handleRowControllerClick(e, row.id)}>⋮</button>
+                                        {contextMenu.isVisible && ReactDOM.createPortal(
+                                            <div className="contextMenu" style={{ position: 'fixed', top: `${contextMenu.position.y}px`, left: `${contextMenu.position.x}px` }}>
+                                                <button onClick={() => removeRow(contextMenu.rowId)}>Delete Row</button>
+                                                {/* Other options */}
+                                            </div>,
+                                            document.body
+                                        )}
                                         <input
                                             className='NameOfRowInput'
+                                            placeholder="Label/Name"
                                             type="text"
                                             value={row.name}
                                             onChange={(e) => updateRowData(editingButtonId, row.id, { name: e.target.value })}
@@ -320,6 +379,7 @@ function CreateProject() {
                                             row.type === 'text' || row.type === 'url' ? (
                                                 <input
                                                     className='DescriptionOfRowInput'
+                                                    placeholder={row.type === 'text' ? "Description" : "URL"}
                                                     type={row.type === 'url' ? 'url' : 'text'}
                                                     value={row.description}
                                                     onChange={(e) => updateRowData(editingButtonId, row.id, { description: e.target.value })}
@@ -328,8 +388,8 @@ function CreateProject() {
                                                 <>
                                                     <button 
                                                         className="fileSelectButton" 
-                                                        onClick={handleFileButtonClick}>
-                                                        {selectedFileName || 'Select File'}
+                                                        onClick={() => fileInputRef.current.click()}>
+                                                        {row.fileName || 'Select File'}
                                                     </button>
                                                     <input
                                                         ref={fileInputRef}
@@ -352,6 +412,10 @@ function CreateProject() {
                                     </div>
                                 ))}
                                 <button className="closeBtn" onClick={() => setEditingButtonId(null)}>Close</button>
+                                <div className="row">
+                                    <button onClick={() => increaseButtonSize(editingButtonId)}>Bigger</button>
+                                    <button onClick={() => decreaseButtonSize(editingButtonId)}>Smaller</button>
+                                </div>
                             </div>
                         )}
                     </div>

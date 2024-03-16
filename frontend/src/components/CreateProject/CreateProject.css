@@ -275,22 +275,48 @@
 }
 
 .rowController {
+    width: 20px;
     background-color: white;
-    border: 1px solid #333;
     color: #333;
+    padding: 5px;
+}
+
+.rowController:hover {
+    background-color: #757575;
+    border: none;
+    color: white;
 }
 
 .fileSelectButton {
-    width: 100%; /* Match the width of other inputs */
+    width: 180px;
     border-radius: 4px;
     background-color: white;
     cursor: pointer;
     font-size: 14px;
     color: #757575;
-    padding: 8px; /* Adjust padding to match other inputs */
+    padding: 7px; /* Adjust padding to match other inputs */
+    margin-left: 5px;
     border: 1px solid #ccc; /* Border to match other inputs */
+    transition: background-color 0.3s;
+    overflow: hidden; /* Prevent text from overflowing */
+    white-space: nowrap; /* Keep text on a single line */
+    text-overflow: ellipsis; /* Add ellipsis (...) to text that overflows */
+}
+
+.fileSelectButton:hover { /* Add hover and .fileSelected styles */
+    background-color: #757575; /* Green background */
+    color: white; /* White text */
 }
 
 .fileInputHidden {
     display: none; /* Ensure the file input is not visible */
+}
+
+.contextMenu {
+    position: absolute;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    padding: 10px;
 }

@@ -64,9 +64,10 @@ function CreateProject() {
             id: buttons.length,
             x: 100,
             y: 100,
-            name: `${buttons.length + 1}`,
+            name: `${buttons.length + 1}`, //since button is small, the number will be enough
             isLocked: false,
             rows: [], // Each row can now have its own set of data, including files
+            buttonSize: 25,
         };
         setButtons([...buttons, newButton]);
     };
@@ -137,7 +138,9 @@ function CreateProject() {
     const increaseButtonSize = (buttonId) => {
         setButtons(buttons.map(button => {
             if (button.id === buttonId) {
-                return { ...button, buttonSize: button.buttonSize + 5 }; // Adjust size increment as needed
+                const newSize = isNaN(button.buttonSize) ? 25 : button.buttonSize + 5; // Default size 25 if NaN
+                console.log({ ...button, buttonSize: newSize });
+                return { ...button, buttonSize: newSize };
             }
             return button;
         }));
@@ -146,7 +149,9 @@ function CreateProject() {
     const decreaseButtonSize = (buttonId) => {
         setButtons(buttons.map(button => {
             if (button.id === buttonId) {
-                return { ...button, buttonSize: Math.max(button.buttonSize - 5, 10) }; // Prevent size from becoming too small
+                const currentSize = isNaN(button.buttonSize) ? 25 : button.buttonSize; // Default size 25 if NaN
+                const newSize = Math.max(currentSize - 5, 10); // Prevent size from becoming too small, with a minimum size
+                return { ...button, buttonSize: newSize };
             }
             return button;
         }));
@@ -327,7 +332,14 @@ function CreateProject() {
                     <div className="imageContainer" onDrop={onDrop} onDragOver={onDragOver}>
                         <img src={imageFile} alt="Project" className="projectImage" style={imageStyle} />
                         {buttons.map(button => (
-                            <div key={button.id} style={{ position: 'absolute', left: button.x, top: button.y }}>
+                            <div 
+                                key={button.id} 
+                                style={{ 
+                                    position: 'absolute', 
+                                    left: button.x, 
+                                    top: button.y
+                                }}
+                            >
                                 {!button.isLocked && (
                                     <>
                                         <button className="removeButton" onClick={() => removeButton(button.id)}>X</button>
@@ -336,9 +348,12 @@ function CreateProject() {
                                 )}
                                 <div
                                     className={`buttonStyle ${button.isLocked ? 'locked' : ''}`}
+                                    style={{ 
+                                        width: `${button.buttonSize}px`, 
+                                        height: `${button.buttonSize}px`
+                                    }}
                                     draggable={!button.isLocked}
                                     onDragStart={(e) => onDragStart(e, button.id)}
-                                    style={{ width: `${button.buttonSize}px`, height: `${button.buttonSize}px` }}
                                     onClick={() => handleButtonClick(button.id)} // Handle click event
                                 >
                                     {button.name}

@@ -174,8 +174,8 @@
 }
 
 .buttonStyle {
-    width: 25px; /* Circle size */
-    height: 25px; /* Circle size */
+    width: 25px;
+    height: 25px;
     background-color: #007bff; /* Button color */
     color: white; /* Text color */
     border-radius: 50%; /* Circular shape */
@@ -187,6 +187,11 @@
     border: 2px solid #0056b3; /* Border to make it stand out */
     cursor: grab; /* Cursor style when mouse over it */
     user-select: none; /* Prevent text selection */
+}
+
+.buttonStyle.locked {
+    cursor: not-allowed; /* Example: Change cursor for locked buttons */
+    /* Other styles for locked buttons */
 }
 
 .removeButton, .lockButton {

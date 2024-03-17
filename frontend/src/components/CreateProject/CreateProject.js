@@ -1,5 +1,6 @@
-import React, { useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useRef, useEffect} from 'react';
+import * as projectService from '../../services/projectService';
+import { useNavigate, useLocation } from 'react-router-dom';
 import ReactDOM from 'react-dom';
 import './CreateProject.css';
 
@@ -16,7 +17,38 @@ function CreateProject() {
     const [contextMenu, setContextMenu] = useState({ isVisible: false, rowId: null, position: { x: 0, y: 0 } });
     const imageInputRef = useRef(); // Ref for the file input
     const navigate = useNavigate();
+    const location = useLocation();
 
+    const saveProject = () => {
+        const projectData = {
+            projectName,
+            buttons,
+            // Other data to save
+        };
+        projectService.saveProjectToLocal(projectData);
+        alert('Project saved successfully!');
+    };
+
+    useEffect(() => {
+        const projectToEditId = location.state?.projectId;
+        
+        if (projectToEditId !== undefined) {
+            // Logic to load the specific project for editing
+            const loadedProjects = projectService.loadProjectsFromLocal();
+            const projectToEdit = loadedProjects.find(project => project.id === projectToEditId);
+            if (projectToEdit) {
+                setProjectName(projectToEdit.projectName);
+                setButtons(projectToEdit.buttons);
+                // Handle other project data similarly
+            }
+        } else {
+            // Initialize for a new project
+            setProjectName('');
+            setButtons([]);
+            // Reset other necessary state
+        }
+    }, [location.state]);
+    
     const handleSubmit = (e) => {
         e.preventDefault();
         const file = imageInputRef.current.files[0];
@@ -230,7 +262,6 @@ function CreateProject() {
         setContextMenu({ isVisible: false, rowId: null, position: { x: 0, y: 0 } }); // Close the context menu
     };
 
-
     const handlePhotoChange = (buttonId, rowId, event) => {
         const file = event.target.files[0];
         if (file) {
@@ -258,15 +289,15 @@ function CreateProject() {
         setEditingButtonId(null); // Close the modal after deletion
     };
     
-
-    const handleSaveProject = () => {
-        // do something
-    }
     const togglePanel = () => setIsPanelOpen(!isPanelOpen);
 
     const GoHome = () => {
         navigate('/'); 
     };
+
+    const GoProjectsPage = () => {
+        navigate('/projects'); 
+    }
 
     return (
         <>
@@ -307,7 +338,8 @@ function CreateProject() {
                         {isPanelOpen && (
                             <div className="navigationPanel">
                                 <button onClick={GoHome}>Home Page</button>
-                                <button onClick={handleSaveProject}>Save Project</button>
+                                <button type="button" onClick={saveProject} className="saveProjectBtn">Save Project</button>
+                                <button onClick={GoProjectsPage}>Projects Page</button>
                             </div>
                         )}
 

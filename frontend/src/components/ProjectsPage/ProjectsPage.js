@@ -1,37 +1,36 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { loadProjectsFromLocal } from '../../services/projectService';
 import './ProjectsPage.css';
 
 function ProjectsPage() {
-  const [projects, setProjects] = useState([
-    { name: "Project 1" },
-    { name: "Project 2" },
-    { name: "Project 3" },
-    { name: "Project 4" },
-    { name: "Project 5" },
-    { name: "Project 6" },
-  ]);
+  const [projects, setProjects] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [isPanelOpen, setIsPanelOpen] = useState(false);
-  
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchYourProjects = async () => {
-      try {
-        const response = await fetch('your-api-endpoint/projects');
-        const data = await response.json();
-        setProjects(data);
-      } catch (error) {
-        console.error("Error fetching projects:", error);
-      }
-    };
-  
-    fetchYourProjects();
+    // Assuming loadProjectsFromLocal correctly loads your projects
+    const loadedProjects = loadProjectsFromLocal();
+    console.log("Loaded projects:", loadedProjects); // Add this line
+    
+    // Transform loadedProjects to match the expected structure
+    const transformedProjects = loadedProjects.map(project => ({
+      name: project.projectName, // Assuming every project has a projectName property
+      // Include other project properties here as needed
+    }));
+
+    setProjects(transformedProjects);
   }, []);
 
   const filteredProjects = projects.filter(project =>
-    project.name.toLowerCase().includes(searchTerm.toLowerCase())
+    (project.name?.toLowerCase() || "").includes(searchTerm.toLowerCase())
   );
+
+  const handleEditProject = (projectId) => {
+    // Navigates to the CreateProject component with project ID for editing
+    navigate('/create-project', { state: { projectId } });
+  };
 
   const togglePanel = () => setIsPanelOpen(!isPanelOpen);
 
@@ -57,8 +56,13 @@ function ProjectsPage() {
             <div key={index} className="projectItem">
               <span className="projectName">{project.name}</span>
               <button className="projectButton">View</button>
-              <button className="projectButton">Edit</button>
-              <button className="projectButton">Download</button>
+              <button 
+                onClick={() => handleEditProject(project.id)} 
+                className="projectButton"
+              >
+                Edit
+              </button>
+              <button className="projectButton">Upload to Cloud</button>
             </div>
           ))}
         </div>

@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect} from 'react';
 import * as projectService from '../../services/projectService';
 import { useNavigate, useLocation } from 'react-router-dom';
 import ReactDOM from 'react-dom';
+import { v4 as uuidv4 } from 'uuid';
 import './CreateProject.css';
 
 function CreateProject() {
@@ -21,8 +22,10 @@ function CreateProject() {
 
     const saveProject = () => {
         const projectData = {
+            id: uuidv4(),
             projectName,
             buttons,
+            imageFile, //new code
             // Other data to save
         };
         projectService.saveProjectToLocal(projectData);
@@ -30,25 +33,22 @@ function CreateProject() {
     };
 
     useEffect(() => {
-        const projectToEditId = location.state?.projectId;
-        
-        if (projectToEditId !== undefined) {
-            // Logic to load the specific project for editing
-            const loadedProjects = projectService.loadProjectsFromLocal();
-            const projectToEdit = loadedProjects.find(project => project.id === projectToEditId);
-            if (projectToEdit) {
-                setProjectName(projectToEdit.projectName);
-                setButtons(projectToEdit.buttons);
-                // Handle other project data similarly
-            }
+        if (location.state?.isEditMode && location.state?.project) {
+            const { project } = location.state;
+            setImageFile(project.imageFile);
+            setProjectName(project.projectName);
+            setButtons(project.buttons || []);
+            setIsSubmitted(true);
         } else {
             // Initialize for a new project
             setProjectName('');
             setButtons([]);
-            // Reset other necessary state
+            setImageFile(null);
+            setIsSubmitted(false);
         }
     }, [location.state]);
-    
+
+
     const handleSubmit = (e) => {
         e.preventDefault();
         const file = imageInputRef.current.files[0];
@@ -362,7 +362,7 @@ function CreateProject() {
                         <button onClick={createButton} className="createInteractiveButtons">+</button>
                     </div>
                     <div className="imageContainer" onDrop={onDrop} onDragOver={onDragOver}>
-                        <img src={imageFile} alt="Project" className="projectImage" style={imageStyle} />
+                    {imageFile && <img src={imageFile} alt="Project" className="projectImage" style={imageStyle} />}
                         {buttons.map(button => (
                             <div 
                                 key={button.id} 

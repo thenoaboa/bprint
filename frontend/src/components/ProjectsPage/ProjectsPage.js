@@ -13,14 +13,11 @@ function ProjectsPage() {
     // Assuming loadProjectsFromLocal correctly loads your projects
     const loadedProjects = loadProjectsFromLocal();
     console.log("Loaded projects:", loadedProjects); // Add this line
-    
-    // Transform loadedProjects to match the expected structure
-    const transformedProjects = loadedProjects.map(project => ({
-      name: project.projectName, // Assuming every project has a projectName property
+    //const transformedProjects = loadedProjects.map(project => ({
+      //name: project.projectName,
       // Include other project properties here as needed
-    }));
-
-    setProjects(transformedProjects);
+    //}));
+    setProjects(loadedProjects || []);
   }, []);
 
   const filteredProjects = projects.filter(project =>
@@ -28,10 +25,22 @@ function ProjectsPage() {
   );
 
   const handleEditProject = (projectId) => {
-    // Navigates to the CreateProject component with project ID for editing
-    navigate('/create-project', { state: { projectId } });
+    // Assuming you're correctly assigning and storing `id` for each project
+    const projectToEdit = projects.find(project => project.id === projectId);
+    console.log("Editing project with ID:", projectId);
+    if (projectToEdit) {
+      navigate('/create-project', { state: { project: projectToEdit, isEditMode: true } });
+    } else {
+      console.error("Project not found for ID:", projectId);
+    }
   };
-
+  
+  const clearLocalStorage = () => {
+    localStorage.clear();
+    alert('Local storage cleared.');
+    // If you're keeping track of projects in state, you might also want to reset that
+    setProjects([]);
+  };
   const togglePanel = () => setIsPanelOpen(!isPanelOpen);
 
   return (
@@ -43,6 +52,7 @@ function ProjectsPage() {
           <Link to="/create-project">Create Project</Link> 
         </div>
       )}
+      <button onClick={clearLocalStorage}>Clear Local Storage (Delete this after testing is done)</button>
       <h1>Your Projects</h1>
       <input
         type="text"
@@ -54,12 +64,9 @@ function ProjectsPage() {
         <div className="projectsList">
           {filteredProjects.map((project, index) => (
             <div key={index} className="projectItem">
-              <span className="projectName">{project.name}</span>
+              <span className="projectName">{project.projectName}</span>
               <button className="projectButton">View</button>
-              <button 
-                onClick={() => handleEditProject(project.id)} 
-                className="projectButton"
-              >
+              <button onClick={() => handleEditProject(project.id)} className="projectButton">
                 Edit
               </button>
               <button className="projectButton">Upload to Cloud</button>
